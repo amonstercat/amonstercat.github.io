@@ -1,9 +1,9 @@
 @font-face{
-    font-family: 'FiraCode';
+    font-family: 'FiraCode-SemiBold';
     font-display: swap;
-    src: url('../font/FiraCode.ttf') format("truetype");
+    src: url('../font/FiraCode-SemiBold.ttf') format("truetype");
 }
 
 body {
-    font-family: 'PingFang SC';
+    font-family: "Microsoft YaHei", 'FiraCode';
 }
