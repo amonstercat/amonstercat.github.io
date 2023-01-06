@@ -1,0 +1,319 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>SpringCloud-Nacos | Blog</title><meta name="keywords" content="java,SpringCloud,Eureka,Nacos"><meta name="author" content="amonstercat"><meta name="copyright" content="amonstercat"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="首先需要启动一个微服务项目，这里以idea2022.1版本为例：  新建父工程（经Spring Initializr创建）  在父工程下添加多个Module（选择maven Archetype）   然后为每个服务配置SpringbootApplication 1234567891011package com.lzc;import org.springframework.boot.SpringAp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud-Nacos">
+<meta property="og:url" content="http://example.com/2023/01/06/SpringCloud-Nacos/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="首先需要启动一个微服务项目，这里以idea2022.1版本为例：  新建父工程（经Spring Initializr创建）  在父工程下添加多个Module（选择maven Archetype）   然后为每个服务配置SpringbootApplication 1234567891011package com.lzc;import org.springframework.boot.SpringAp">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/springcloud.png">
+<meta property="article:published_time" content="2023-01-06T10:00:00.000Z">
+<meta property="article:modified_time" content="2023-01-06T17:15:30.854Z">
+<meta property="article:author" content="amonstercat">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="SpringCloud">
+<meta property="article:tag" content="Eureka">
+<meta property="article:tag" content="Nacos">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/springcloud.png"><link rel="shortcut icon" href="/img/boxertocat_octodex.jpg"><link rel="canonical" href="http://example.com/2023/01/06/SpringCloud-Nacos/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SpringCloud-Nacos',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-01-07 01:15:30'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="themes/butterfly/source/css/font.css"><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/Monstercat.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-eye-low-vision"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/springcloud.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-eye-low-vision"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SpringCloud-Nacos</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-01-06T10:00:00.000Z" title="Created 2023-01-06 18:00:00">2023-01-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-01-06T17:15:30.854Z" title="Updated 2023-01-07 01:15:30">2023-01-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">学习记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word count:</span><span class="word-count">3.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading time:</span><span>11min</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SpringCloud-Nacos"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>首先需要启动一个微服务项目，这里以idea2022.1版本为例：</p>
+<ol>
+<li><p>新建父工程（经Spring Initializr创建）</p>
+</li>
+<li><p>在父工程下添加多个Module（选择maven Archetype）<br> <img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.328888.xyz/2023/01/05/WeLEv.png" alt="WeLEv.png"></p>
+</li>
+<li><p>然后为每个服务配置SpringbootApplication</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lzc;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserApplication</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">( String[] args )</span></span><br><span class="line">    &#123;</span><br><span class="line">        SpringApplication.run(UserApplication.class,args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动多个服务后，可以看到idea下方的Services会显示已启动过的服务：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.328888.xyz/2023/01/05/WeYAZ.png" alt="WeYAZ.png"></p>
+</li>
+<li><p>配置各个服务的端口号后再Rerun一下（此时会显示各个所服务运行的端口号）：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.328888.xyz/2023/01/05/WzAkX.png" alt="WzAkX.png"></p>
+</li>
+</ol>
+<h2 id="Eureka-NetFlix"><a href="#Eureka-NetFlix" class="headerlink" title="Eureka(NetFlix)"></a>Eureka(NetFlix)</h2><p> Eureka是Netflix开发的服务发现组件，本身是一个基于REST的服务。Spring Cloud将它集成在其子项目spring-cloud-netflix中，以实现Spring Cloud的服务发现功能。</p>
+<p> Eureka采用了C-S的设计架构，包含两个组件：Eureka Server 和 Eureka Client。Eureka Server作为服务注册功能的服务器，它是服务注册中心。各个节点启动后，会在Eureka Server中进行注册，这样Eureka Server中的服务注册表中将会存储所有可用服务节点的信息，服务节点的信息可以在界面中直观的看到。Eureka Client是一个Java客户端，用于简化Eureka Server的交互，客户端同时也具备一个内置的、使用轮询负载算法的负载均衡器。在应用启动后，将会向Eureka Server发送心跳（默认周期为30秒）。如果Eureka Server在多个心跳周期内没有接收到某个节点的心跳。Eureka Server将会从服务注册表中把这个服务节点移除（默认90秒）而系统中的其他微服务，使用Eureka的客户端连接到Eureka Server并维持心跳连接。这样系统的维护人员就可以通过Eureka Server来监控系统中各个微服务是否正常运行。</p>
+<p>  在Eureka架构中，微服务角色有两类：</p>
+<ol>
+<li><p>EurekaServer：服务端（注册中心）</p>
+<p>记录服务信息</p>
+<p>心跳监控</p>
+</li>
+<li><p>EurekaClient：（客户端）</p>
+<p>Provider：服务提供者，注册自身服务信息到EurekaServer，同时每隔30秒向EurekaServer发送心跳</p>
+<p>Consumer：服务消费者，根据服务名称从EurekaServer拉取服务列表，同时基于服务列表做负载均衡，选中一个微服务后发起远程调用</p>
+</li>
+</ol>
+<p>Eureka的架构图如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.328888.xyz/2023/01/05/WEafo.png" alt="WEafo.png"></p>
+<p>可以简单地将region理解为Eureka集群，zone理解成机房。这样图4-2就很好理解了——一个Eureka集群被部署在了zone1机房和zone2机房中。</p>
+<h2 id="Nacos-Alibaba"><a href="#Nacos-Alibaba" class="headerlink" title="Nacos(Alibaba)"></a>Nacos(Alibaba)</h2><p>首先需要注意SpringCloud Alibaba和Springboot版本之间的对应，对应关系可在官方<a target="_blank" rel="noopener" href="https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E">github</a>上找到，这里使用的版本为：</p>
+<p>Spring Cloud Version：Spring Cloud Hoxton.SR9</p>
+<p>Spring Cloud Alibaba Version：2.2.6.RELEASE</p>
+<p>Spring Boot Version：2.3.2.RELEASE</p>
+<h3 id="组件版本关系"><a href="#组件版本关系" class="headerlink" title="组件版本关系"></a>组件版本关系</h3><p>每个 Spring Cloud Alibaba 版本及其自身所适配的各组件对应版本如下表所示（注意，Spring Cloud Dubbo 从 2021.0.1.0 起已被移除出主干，不再随主干演进）：</p>
+<table>
+<thead>
+<tr>
+<th>Spring Cloud Alibaba Version</th>
+<th>Sentinel Version</th>
+<th>Nacos Version</th>
+<th>RocketMQ Version</th>
+<th>Dubbo Version</th>
+<th>Seata Version</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2022.0.0.0-RC</td>
+<td>1.8.6</td>
+<td>2.2.1-RC</td>
+<td>4.9.4</td>
+<td>~</td>
+<td>1.6.1</td>
+</tr>
+<tr>
+<td>2.2.9.RELEASE</td>
+<td>1.8.5</td>
+<td>2.1.0</td>
+<td>4.9.4</td>
+<td>~</td>
+<td>1.5.2</td>
+</tr>
+<tr>
+<td>2021.0.4.0</td>
+<td>1.8.5</td>
+<td>2.0.4</td>
+<td>4.9.4</td>
+<td>~</td>
+<td>1.5.2</td>
+</tr>
+<tr>
+<td>2.2.8.RELEASE</td>
+<td>1.8.4</td>
+<td>2.1.0</td>
+<td>4.9.3</td>
+<td>~</td>
+<td>1.5.1</td>
+</tr>
+<tr>
+<td>2021.0.1.0</td>
+<td>1.8.3</td>
+<td>1.4.2</td>
+<td>4.9.2</td>
+<td>~</td>
+<td>1.4.2</td>
+</tr>
+<tr>
+<td>2.2.7.RELEASE</td>
+<td>1.8.1</td>
+<td>2.0.3</td>
+<td>4.6.1</td>
+<td>2.7.13</td>
+<td>1.3.0</td>
+</tr>
+<tr>
+<td>2.2.6.RELEASE</td>
+<td>1.8.1</td>
+<td>1.4.2</td>
+<td>4.4.0</td>
+<td>2.7.8</td>
+<td>1.3.0</td>
+</tr>
+<tr>
+<td>2021.1 or 2.2.5.RELEASE or 2.1.4.RELEASE or 2.0.4.RELEASE</td>
+<td>1.8.0</td>
+<td>1.4.1</td>
+<td>4.4.0</td>
+<td>2.7.8</td>
+<td>1.3.0</td>
+</tr>
+</tbody></table>
+<p>使用dependencyManagement可以统一管理项目的版本号，确保应用的各个项目的依赖和版本一致dependencyManagement里只是声明依赖，并不自动实现引入，因此子项目需要显示的声明需要用的依赖。如果不在子项目中声明依赖，是不会从父项目中继承下来的；只有在子项目中写了该依赖项，并且没有指定具体版本，才会从父项目中继承该项，并且version和scope都读取自父pom：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--父pom.xml--&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--子module通过dependency完成继承--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencyManagement</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--SpringBoot 版本管理--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.2.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">type</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">scope</span>&gt;</span>import<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--Springcloud- alibaba 版本管理--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-alibaba-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">type</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">scope</span>&gt;</span>import<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--Springcloud-版本管理--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>Hoxton.SR9<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">type</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">scope</span>&gt;</span>import<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencyManagement</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="注册中心"><a href="#注册中心" class="headerlink" title="注册中心"></a>注册中心</h3><p>目前主流的注册中心有以下几种：</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://segmentfault.com/img/bVbK2g6/view" height="800" width="800"/>
+
+<p>Nacos可以看作是一个集注册中心（服务发现）、配置中心、服务管理（可视化界面）的平台，Nacos有以下核心功能：</p>
+<ol>
+<li><strong>服务注册</strong>：Nacos Client（一个微服务）会通过发送REST请求的方式向Nacos Server注册自己的服务，提供自身的元数据，比如ip地址、端口等信息。Nacos Server接收到注册请求后，就会把这些元数据信息存储在一个双层的内存Map中。</li>
+<li><strong>服务心跳</strong>：在服务注册后，Nacos Client会维护一个定时心跳来持续通知Nacos Server，说明服务一直处于可用状态，防止被剔除。默认5s发送一次心跳。</li>
+<li><strong>服务同步</strong>：Nacos Server集群之间会互相同步服务实例，用来保证服务信息的一致性（leader选举-raft算法）</li>
+<li><strong>服务发现</strong>：服务消费者（Nacos Client）在调用服务提供者的服务时，会发送一个REST请求给Nacos Server，获取上面注册的服务清单，并且<strong>缓存</strong>在Nacos Client本地，同时会在Nacos Client本地开启一个定时任务定时拉取服务端最新的注册表信息更新到本地缓存</li>
+<li><strong>服务健康检查</strong>：Nacos Server会开启一个定时任务用来检查注册服务实例的健康情况，对于超过15s没有收到客户端心跳的实例会将它的healthy属性置为false(客户端服务发现时不会发现)，如果某个实例超过30秒没有收到心跳，直接剔除该实例(被剔除的实例如果恢复发送心跳则会重新注册)</li>
+</ol>
+<p>Nacos可以实现CP+AP(CAP理论)，任何一个分布式架构都无法同时满足三个特性！</p>
+<h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><p>CAP理论是分布式架构中重要理论：</p>
+<ul>
+<li>一致性(Consistency)：所有节点在同一时间具有相同的数据；</li>
+<li>可用性(Availability) ：保证每个请求不管成功或者失败都有响应（每次请求都能获取到非错的响应 但是不保证获取的数据为最新数据）；</li>
+<li>分区容错性(Partition tolerance) ：系统中任意信息的丢失或失败不会影响系统的继续运作（系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择）。</li>
+</ul>
+<p>关于 P 的理解，我觉得是在整个系统中某个部分挂掉或者宕机了，并不影响整个系统的运作；而可用性是指某个系统的某个节点挂了，但是并不影响系统的接受或者发出请求（可通过集群实现）。</p>
+<p>CAP 不可能都取，只能取其中2个的原因如下：</p>
+<ul>
+<li>如果C是第一需求的话，那么会影响A的性能，因为要数据同步，不然请求结果会有差异，但是数据同步会消耗时间，期间可用性就会降低。</li>
+<li>如果A是第一需求，那么只要有一个服务在，就能正常接受请求，但是对于返回结果变不能保证，原因是，在分布式部署的时候，数据一致的过程不可能想切线路那么快。</li>
+<li>再如果，同时满足一致性和可用性，那么分区容错就很难保证了，也就是单点，也是分布式的基本核心。</li>
+</ul>
+<p>另一种理解角度：想象两个节点分处分区两侧 ，允许至少一个节点更新状态会导致数据不一致，即丧失了C性质；如果为了保证数据一致性，将分区一侧的节点设置为不可用，那么又丧失了A性质。除非两个节点可以互相通信，才能既保证C又保证A，这又会导致丧失P性质</p>
+<h4 id="分布式系统协议"><a href="#分布式系统协议" class="headerlink" title="分布式系统协议"></a>分布式系统协议</h4><p>一致性协议算法主要有Paxos、Raft、ZAB</p>
+<p>Paxos算法是Leslie Lamport在1990年提出的一种基于消息传递的一致性算法，非常难以理解，基于Paxos协议的数据同步与传统主备方式最大的区别在于：Paxos只需超过半数的副本在线且相互通信正常，就可以保证服务的持续可用，且数据不丢失。</p>
+<p>Raft是斯坦福大学的Diego Ongaro、John Ousterhout两个人以易理解为目标设计的一致性算法，已经有了十几种语言的Raft算法实现框架，较为出名的有etcd，Google的Kubernetes也是用了etcd作为他的服务发现框架。Raft是Paxos的简化版，与Paxos相比，Raft强调的是易理解、易实现，Raft和Paxos一样只要保证超过半数的节点正常就能够提供服务。这篇文章 《ETCD教程-2.Raft协议》 详细讲解了Raft原理，非常有意思，感兴趣的同学可以看看。</p>
+<p>ZooKeeper Atomic Broadcast (ZAB, ZooKeeper原子消息广播协议)是ZooKeeper实现分布式数据一致性的核心算法，ZAB借鉴Paxos算法，但又不像Paxos算法那样，是一种通用的分布式一致性算法，它是一种特别为ZooKeeper专门设计的支持崩溃恢复的原子广播协议。</p>
+<h3 id="安装Nacos"><a href="#安装Nacos" class="headerlink" title="安装Nacos"></a>安装Nacos</h3><p>根据官方提供的Springcloud-Alibaba对应微服务组件版本表得到所需要安装的Nacos版本为<a target="_blank" rel="noopener" href="https://github.com/alibaba/Nacos/releases?page=2">1.4.2</a>，下载后解压，在bin目录下找到startup.cmd（linux下则为startup.sh），修改此文件中<code>mode</code>选项，设置为单机模式（默认启动为集群模式）：</p>
+<p><code>set *MODE*=&quot;standalone&quot;</code>  </p>
+<p>修改完成后运行startup.cmd，可以发现nacos默认运行在内存中（默认端口号为8848）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">2023-01-06 21:23:42,070 INFO Tomcat started on port(s): 8848 (http) with context path &#x27;/nacos&#x27;</span><br><span class="line"></span><br><span class="line">2023-01-06 21:23:42,073 INFO Nacos started successfully in stand alone mode. use embedded storage</span><br><span class="line"></span><br><span class="line">2023-01-06 21:23:57,345 INFO Initializing Servlet &#x27;dispatcherServlet&#x27;</span><br><span class="line"></span><br><span class="line">2023-01-06 21:23:57,351 INFO Completed initialization in 6 ms</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="注册微服务"><a href="#注册微服务" class="headerlink" title="注册微服务"></a>注册微服务</h3><p>打开idea,分别为order-service、stock-service两个微服务配置nacos：</p>
+<p>修改各自子目录下的application.yaml：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8010</span>  <span class="comment">#端口自定义</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">order-service</span>      <span class="comment">#应用名称</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">nacos:</span></span><br><span class="line">      <span class="attr">server-addr:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:8848</span> <span class="comment">#本机地址</span></span><br><span class="line">      <span class="attr">discovery:</span></span><br><span class="line">        <span class="attr">username:</span> <span class="string">nacos</span></span><br><span class="line">        <span class="attr">password:</span>  <span class="string">nacos</span></span><br><span class="line">        <span class="attr">namespace:</span> <span class="string">public</span></span><br></pre></td></tr></table></figure>
+
+<p>设置完成后，分别启动<code>OrderApplication</code>与<code>StockApplication</code>，并登录nacos（127.0.0.1:8848）来查看微服务运行状态：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.328888.xyz/2023/01/06/kC1L5.png" alt="kC1L5.png"></p>
+<h3 id="远程调用"><a href="#远程调用" class="headerlink" title="远程调用"></a>远程调用</h3><p>服务之间相互调用时必须经过负载均衡器！</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@LoadBalanced</span> <span class="comment">//配置负载均衡器</span></span><br><span class="line"><span class="keyword">public</span> RestTemplate <span class="title function_">restTemplate</span><span class="params">(RestTemplateBuilder restTemplateBuilder)</span></span><br><span class="line">&#123;</span><br><span class="line">    RestTemplate restTemplate=restTemplateBuilder.build();  <span class="comment">//构造器模式</span></span><br><span class="line">    <span class="keyword">return</span>  restTemplate;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配置完成后，就可以在OrderController中调用stock-service中的请求：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">RestTemplate restTemplate;</span><br><span class="line"><span class="meta">@RequestMapping(&quot;/add&quot;)</span></span><br><span class="line"><span class="keyword">public</span>  String <span class="title function_">add</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;下单成功&quot;</span>);</span><br><span class="line">    <span class="comment">//springboot调用服务的方式restTemplate：  远程调用stock-service中的/stock/reduce请求</span></span><br><span class="line">    String msg= restTemplate.getForObject(<span class="string">&quot;http://stock-service/stock/reduce&quot;</span>,String.class);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello orderservice&quot;</span>+msg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="模拟负载均衡"><a href="#模拟负载均衡" class="headerlink" title="模拟负载均衡"></a>模拟负载均衡</h3><p>Nacos默认调用<code>NetFlix-Ribbon</code>来实现负载均衡:</p>
+<p>StockController.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/stock&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StockController</span> &#123;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;server.port&#125;&quot;)</span>  <span class="comment">//@Value(&quot;$&#123;&#125;&quot;):可以获取对应属性文件中定义的属性值。</span></span><br><span class="line">    String port;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/reduce&quot;)</span></span><br><span class="line">    <span class="keyword">public</span>  String <span class="title function_">reduce</span> <span class="params">()</span></span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;扣减库存&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;扣减库存&quot;</span>+<span class="string">&quot;当前调用的stock-service port为&quot;</span>+port;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="配置Nacos集群"><a href="#配置Nacos集群" class="headerlink" title="配置Nacos集群"></a>配置Nacos集群</h3></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/amonstercat">amonstercat</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2023/01/06/SpringCloud-Nacos/">http://example.com/2023/01/06/SpringCloud-Nacos/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/java/">java</a><a class="post-meta__tags" href="/tags/SpringCloud/">SpringCloud</a><a class="post-meta__tags" href="/tags/Eureka/">Eureka</a><a class="post-meta__tags" href="/tags/Nacos/">Nacos</a></div><div class="post_share"><div class="social-share" data-image="/img/springcloud.png" data-sites="twitter,wechat,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/01/04/redis%EF%BC%882%EF%BC%89/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/RedisCluster.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Redis（2）搭建集群</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2022/12/31/redis/" title="Redis持久化"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/redis.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-31</div><div class="title">Redis持久化</div></div></a></div><div><a href="/2023/01/04/redis%EF%BC%882%EF%BC%89/" title="Redis（2）搭建集群"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/RedisCluster.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-04</div><div class="title">Redis（2）搭建集群</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/Monstercat.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">amonstercat</div><div class="author-info__description">-an amateur coder-</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/amonstercat"><i class="fas fa-cat"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://t.me/aMonstercat" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a><a class="social-icon" href="https://github.com/amonstercat" target="_blank" title="Github"><i class="fab fa-github-alt"></i></a><a class="social-icon" href="mailto:amonstercattt@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a><a class="social-icon" href="https://twitter.com/aMonstercatt" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">Having fun</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Eureka-NetFlix"><span class="toc-number">1.</span> <span class="toc-text">Eureka(NetFlix)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nacos-Alibaba"><span class="toc-number">2.</span> <span class="toc-text">Nacos(Alibaba)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E7%89%88%E6%9C%AC%E5%85%B3%E7%B3%BB"><span class="toc-number">2.1.</span> <span class="toc-text">组件版本关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="toc-number">2.2.</span> <span class="toc-text">注册中心</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CAP%E7%90%86%E8%AE%BA"><span class="toc-number">2.3.</span> <span class="toc-text">CAP理论</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.3.1.</span> <span class="toc-text">分布式系统协议</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Nacos"><span class="toc-number">2.4.</span> <span class="toc-text">安装Nacos</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E5%BE%AE%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.5.</span> <span class="toc-text">注册微服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8"><span class="toc-number">2.6.</span> <span class="toc-text">远程调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E6%8B%9F%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="toc-number">2.7.</span> <span class="toc-text">模拟负载均衡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AENacos%E9%9B%86%E7%BE%A4"><span class="toc-number">2.8.</span> <span class="toc-text">配置Nacos集群</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/01/06/SpringCloud-Nacos/" title="SpringCloud-Nacos"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/springcloud.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringCloud-Nacos"/></a><div class="content"><a class="title" href="/2023/01/06/SpringCloud-Nacos/" title="SpringCloud-Nacos">SpringCloud-Nacos</a><time datetime="2023-01-06T10:00:00.000Z" title="Created 2023-01-06 18:00:00">2023-01-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/04/redis%EF%BC%882%EF%BC%89/" title="Redis（2）搭建集群"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/RedisCluster.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis（2）搭建集群"/></a><div class="content"><a class="title" href="/2023/01/04/redis%EF%BC%882%EF%BC%89/" title="Redis（2）搭建集群">Redis（2）搭建集群</a><time datetime="2023-01-04T15:25:00.000Z" title="Created 2023-01-04 23:25:00">2023-01-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/31/redis/" title="Redis持久化"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/redis.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis持久化"/></a><div class="content"><a class="title" href="/2022/12/31/redis/" title="Redis持久化">Redis持久化</a><time datetime="2022-12-31T14:25:00.000Z" title="Created 2022-12-31 22:25:00">2022-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/31/%E8%A7%86%E9%A2%91%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2/" title="视频语义分割（1）"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/semantic-segmentation.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="视频语义分割（1）"/></a><div class="content"><a class="title" href="/2022/12/31/%E8%A7%86%E9%A2%91%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2/" title="视频语义分割（1）">视频语义分割（1）</a><time datetime="2022-12-31T06:25:00.000Z" title="Created 2022-12-31 14:25:00">2022-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/18/vscode%E8%BF%9E%E6%8E%A5Ubuntu/" title="vscode远程连接Ubuntu"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/vscode-ssh-linux.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="vscode远程连接Ubuntu"/></a><div class="content"><a class="title" href="/2022/09/18/vscode%E8%BF%9E%E6%8E%A5Ubuntu/" title="vscode远程连接Ubuntu">vscode远程连接Ubuntu</a><time datetime="2022-09-17T18:25:00.000Z" title="Created 2022-09-18 02:25:00">2022-09-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By amonstercat</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Having fun!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="Chat"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="100" alpha="0.5" zIndex="-1" mobile="true" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
