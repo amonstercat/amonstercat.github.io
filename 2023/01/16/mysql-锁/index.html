@@ -1,0 +1,258 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Mysql-锁机制 | Blog</title><meta name="keywords" content="Mysql,数据库"><meta name="author" content="amonstercat"><meta name="copyright" content="amonstercat"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="悲观（乐观）锁乐观锁和悲观锁并不是锁，而是锁的设计思想 乐观锁：乐观锁（Optimistic Locking）认为对同一数据的并发操作不会总发生，属于小概率事件，不用每次都对数据上锁，也就是不采用数据库自身的锁机制，而是通过程序来实现。在程序上，我们可以采用版本号机制或者时间戳机制实现。  乐观锁的版本号机制在表中设计一个版本字段 version，第一次读的时候，会获取 version 字段的取值">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql-锁机制">
+<meta property="og:url" content="http://example.com/2023/01/16/mysql-%E9%94%81/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="悲观（乐观）锁乐观锁和悲观锁并不是锁，而是锁的设计思想 乐观锁：乐观锁（Optimistic Locking）认为对同一数据的并发操作不会总发生，属于小概率事件，不用每次都对数据上锁，也就是不采用数据库自身的锁机制，而是通过程序来实现。在程序上，我们可以采用版本号机制或者时间戳机制实现。  乐观锁的版本号机制在表中设计一个版本字段 version，第一次读的时候，会获取 version 字段的取值">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/investigating-locks-in-mysql.jpg">
+<meta property="article:published_time" content="2023-01-16T10:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-07T14:25:37.354Z">
+<meta property="article:author" content="amonstercat">
+<meta property="article:tag" content="Mysql">
+<meta property="article:tag" content="数据库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/investigating-locks-in-mysql.jpg"><link rel="shortcut icon" href="/img/boxertocat_octodex.jpg"><link rel="canonical" href="http://example.com/2023/01/16/mysql-%E9%94%81/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Mysql-锁机制',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-02-07 22:25:37'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="themes/butterfly/source/css/font.css"><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/Monstercat.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-eye-low-vision"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/investigating-locks-in-mysql.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-eye-low-vision"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Mysql-锁机制<a class="post-edit-link" href="null_posts/mysql-锁.md" title="Edited on" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-01-16T10:00:00.000Z" title="Created 2023-01-16 18:00:00">2023-01-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-02-07T14:25:37.354Z" title="Updated 2023-02-07 22:25:37">2023-02-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">学习记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word count:</span><span class="word-count">5.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading time:</span><span>17min</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Mysql-锁机制"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="悲观（乐观）锁"><a href="#悲观（乐观）锁" class="headerlink" title="悲观（乐观）锁"></a>悲观（乐观）锁</h3><p>乐观锁和悲观锁并不是锁，而是锁的设计思想</p>
+<p><strong>乐观锁</strong>：乐观锁（Optimistic Locking）认为对同一数据的并发操作不会总发生，属于小概率事件，不用每次都对数据上锁，也就是不采用数据库自身的锁机制，而是通过程序来实现。在程序上，我们可以采用版本号机制或者时间戳机制实现。</p>
+<ul>
+<li>乐观锁的版本号机制<br>在表中设计一个版本字段 version，第一次读的时候，会获取 version 字段的取值。然后对数据进行更新或删除操作时，会执行UPDATE … SET version&#x3D;version+1 WHERE version&#x3D;version。此时如果已经有事务对这条数据进行了更改，修改就不会成功。</li>
+<li>乐观锁的时间戳机制<br>时间戳和版本号机制一样，也是在更新提交的时候，将当前数据的时间戳和更新之前取得的时间戳进行比较，如果两者一致则更新成功，否则就是版本冲突。</li>
+</ul>
+<p><strong>悲观锁</strong>：悲观锁（Pessimistic Locking）也是一种思想，对数据被其他事务的修改持保守态度，会通过数据库自身的锁机制来实现，从而保证数据操作的排它性。</p>
+<p>总结：乐观锁适合读操作多的场景，相对来说写的操作比较少。它的优点在于程序实现，不存在死锁问题，不过适用场景也会相对乐观，因为它阻止不了除了程序以外的数据库操作。悲观锁适合写操作多的场景，因为写的操作具有排它性。采用悲观锁的方式，可以在数据库层面阻止其他事务对该数据的操作权限，防止读 - 写和写 - 写的冲突。</p>
+<h3 id="按锁粒度"><a href="#按锁粒度" class="headerlink" title="按锁粒度"></a>按锁粒度</h3><h4 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h4><p>表锁一般有表锁、元数据锁（MDL）、意向锁、Auto-INC锁</p>
+<p>表级别的锁定是MySQL各存储引擎中最大颗粒度的锁定机制。该锁定机制最大的特点是<code>实现逻辑非常简单，带来的系统负面影响最小</code>，所以获取锁和释放锁的速度很快。由于表级锁一次会将整个表锁定，所以可以很好的避免困扰我们的死锁问；当然锁定颗粒度大所带来最大的负面影响就是出现锁定资源争用的概率也会最高，大大降低并发度；使用表级锁定的主要是MyISAM，MEMORY，CSV等一些非事务性存储引擎</p>
+<p>下面先介绍一下MySQL里表级别的锁：<strong>表锁和元数据锁（meta data lock，MDL)</strong></p>
+<h5 id="元数据锁"><a href="#元数据锁" class="headerlink" title="元数据锁"></a>元数据锁</h5><ol>
+<li>举个例子, 如果在某个线程 A 中执行 lock tables t1 read, t2 write; 这个语句，则其他线程写 t1、读写 t2 的语句都会被阻塞。同时，线程 A 在执行 unlock tables 之前，也只能执行读 t1、读写 t2 的操作。连写 t1 都不允许，自然也不能访问其他表，在还没有出现更细粒度的锁的时候，表锁是最常用的处理并发的方式。而对于 InnoDB 这种支持行锁的引擎，一般不使用 lock tables 命令来控制并发，毕竟锁住整个表的影响面还是太大</li>
+<li><strong>MDL作用是防止DDL和DML并发的冲突，保证读写的正确性</strong>， ****<code>MDL 不需要显式使用</code>，在访问一个表的时候会被自动加上。<code>MDL 的作用是，保证读写的正确性</code>：可以想象一下，如果一个查询正在遍历一个表中的数据，而执行期间另一个线程对这个表结构做变更，删了一列，那么查询线程拿到的结果跟表结构对不上，肯定是不行的。因此，在MySQL 5.5 版本中引入了 MDL，<code>当对一个表做增删改查操作的时候，加 MDL读锁；当要对表做结构变更操作的时候，加 MDL 写锁</code></li>
+</ol>
+<h5 id="Auto-Inc锁"><a href="#Auto-Inc锁" class="headerlink" title="Auto-Inc锁"></a>Auto-Inc锁</h5><p>表里的主键通常都会设置成自增的，这是通过对主键字段声明 <code>AUTO_INCREMENT</code> 属性实现的。之后可以在插入数据时，可以不指定主键的值，数据库会自动给主键赋值递增的值，这主要是通过 <strong>AUTO-INC锁</strong>实现的。AUTO-INC锁是特殊的表锁机制，锁<strong>不是再一个事务提交后才释放，而是再执行完插入语句后就会立即释放</strong></p>
+<p>工作过程：<strong>在插入数据时，会加一个表级别的 AUTO-INC 锁</strong>，然后为被 <code>AUTO_INCREMENT</code>修饰的字段赋值递增的值，等插入语句执行完成后，才会把 AUTO-INC 锁释放掉。那么，一个事务在持有 AUTO-INC 锁的过程中，其他事务的如果要向该表插入语句都会被阻塞，从而保证插入数据时，被 <code>AUTO_INCREMENT</code> 修饰的字段的值是连续递增的。</p>
+<p>但是， AUTO-INC 锁再对大量数据进行插入的时候，会影响插入性能，因为另一个事务中的插入会被阻塞，因此， 在 MySQL 5.1.22 版本开始，InnoDB 存储引擎提供了一种<strong>轻量级的锁</strong>来实现自增，一样也是在插入数据的时候，会为被 <code>AUTO_INCREMENT</code> 修饰的字段加上轻量级锁，<strong>然后给该字段赋值一个自增的值，就把这个轻量级锁释放了，而不需要等待整个插入语句执行完后才释放锁</strong>。</p>
+<p>InnoDB 存储引擎提供了个 innodb_autoinc_lock_mode 的系统变量，是用来控制选择用 AUTO-INC 锁，还是轻量级的锁。</p>
+<ul>
+<li>当 innodb_autoinc_lock_mode &#x3D; 0，就采用 AUTO-INC 锁，语句执行结束后才释放锁；</li>
+<li>当 innodb_autoinc_lock_mode &#x3D; 2，就采用轻量级锁，申请自增主键后就释放锁，并不需要等语句执行后才释放。</li>
+<li>当 innodb_autoinc_lock_mode &#x3D; 1：<ul>
+<li>普通 insert 语句，自增锁在申请之后就马上释放；</li>
+<li>类似 insert … select 这样的批量插入数据的语句，自增锁还是要等语句结束后才被释放；</li>
+</ul>
+</li>
+</ul>
+<p>当 innodb_autoinc_lock_mode &#x3D; 2 是性能最高的方式，但是当搭配 binlog 的日志格式是 statement 一起使用的时候，在「主从复制的场景」中会发生<strong>数据不一致的问题</strong></p>
+<h4 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h4><p>（1）与表锁正相反，行锁最大的特点就是锁定对象的颗粒度很小，也是目前各大数据库管理软件所实现的锁定颗粒度最小的。由于锁定颗粒度很小，所以发生锁定资源争用的概率也最小，能够给予应用程序尽可能大的并发处理能力从而提高系统的整体性能<br>（2）虽然能够在并发处理能力上面有较大的优势，但是行级锁定也因此带来了不少弊端。由于锁定资源的颗粒度很小，所以每次获取锁和释放锁需要做的事情也更多，带来的消耗自然也就更大了。此外，<code>行级锁定也最容易发生死锁</code>，使用行级锁定的主要是InnoDB存储引擎</p>
+<p><strong>注：行级锁提高了多个事务并发处理的能力，同时也容易导致死锁的发生（4个必要条件），两者并不冲突！</strong></p>
+<h5 id="Record-Lock"><a href="#Record-Lock" class="headerlink" title="Record Lock"></a>Record Lock</h5><p>锁定的是索引记录，而不是行数据，即锁定的是key，<strong>记录锁（Record Lock）是针对索引记录（index record）的锁定</strong>。例如，<code>SELECT * FROM t WHERE id = 1 FOR UPDATE;</code>会阻止其他事务对表 t 中 id &#x3D; 1 的数据执行插入、更新，以及删除操作。</p>
+<h5 id="Gap-Lock"><a href="#Gap-Lock" class="headerlink" title="Gap Lock"></a>Gap Lock</h5><p>对于键值在条件范围内但并不存在的记录, 叫做”间隙 (GAP)”, InnoDB也会对这个”间隙”加锁, 这种锁机制就是所谓的间隙锁<strong>它会锁定索引记录间隙, 但不包括记录本身（左开右开区间）</strong>，确保索引记录的间隙不变。</p>
+<p>间隙锁是针对事务隔离级别为可重复读或以上级别而已的，（例如，<code>SELECT * FROM t WHERE c1 BETWEEN 1 and 10 FOR UPDATE</code>会阻止其他事务将 1 到 10 之间的任何值插入到 c1 字段中（<strong>但是可以修改1和10</strong>），即使该列不存在这样的数据；因为这些值都会被锁定）</p>
+<p>间隙锁虽然存在 X 型间隙锁和 S 型间隙锁，但是并没有什么区别，<strong>间隙锁之间是兼容的，即两个事务可以同时持有包含共同间隙范围的间隙锁，并不存在互斥关系，因为间隙锁的目的是防止插入幻影记录而提出的</strong>。</p>
+<h5 id="Next-Key-Lock"><a href="#Next-Key-Lock" class="headerlink" title="Next-Key Lock"></a>Next-Key Lock</h5><p>Next-Key Lock是行锁和间隙锁的组合，当InnoDB扫描索引记录的时候，会首先对索引记录加上行锁（Record Lock），再对索引记录两边的间隙加上间隙锁（Gap Lock）。加上间隙锁之后，其他事务就不能在这个间隙修改或者插入记录。</p>
+<p>MVCC 不能解决幻影读问题，Next-Key Locks 就是为了解决这个问题而存在的。在可重复读（REPEATABLE READ）隔离级别下，使用 MVCC + Next-Key Locks 可以解决幻读问题；</p>
+<p>记录锁和间隙锁组合起来就叫Next-Key Lock,默认情况下InnoDB工作在可重复读隔离级别，并且会以Next-Key Lock的方式对数据行进行加锁，这样可以有效防止幻读的发生；</p>
+<p>它是 Record Locks 和 Gap Locks 的结合，不仅锁定一个记录上的索引，也锁定索引之间的间隙。它锁定一个前开后闭区间，例如一个索引包含以下值：10, 11, 13, and 20，那么就需要锁定以下区间：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="operator">-</span>∞, <span class="number">10</span>]</span><br><span class="line">(<span class="number">10</span>, <span class="number">11</span>]</span><br><span class="line">(<span class="number">11</span>, <span class="number">13</span>]</span><br><span class="line">(<span class="number">13</span>, <span class="number">20</span>]</span><br><span class="line">(<span class="number">20</span>, <span class="operator">+</span>∞)</span><br></pre></td></tr></table></figure>
+
+<p><strong>其中：(10, 11) 是一个间隙锁的锁定范围，(10, 11] 是一个 next-key 锁的锁定范围</strong>。</p>
+<h5 id="插入意向锁"><a href="#插入意向锁" class="headerlink" title="插入意向锁"></a>插入意向锁</h5><p>一个事务在插入一条记录的时候，需要判断插入位置是否已被其他事务加了间隙锁（next-key lock 也包含间隙锁）。</p>
+<p>如果有的话，插入操作就会发生<strong>阻塞</strong>，直到拥有间隙锁的那个事务提交为止（释放间隙锁的时刻），在此期间会生成一个<strong>插入意向锁</strong>，表明有事务想在某个区间插入新记录，但是现在处于等待状态。</p>
+<p>举个例子，假设事务 A 已经对表加了一个范围 id 为（3，5）间隙锁，当事务 A 还没提交的时候，事务 B 向该表插入一条 id &#x3D; 4 的新记录，这时会判断到插入的位置已经被事务 A 加了间隙锁，于是事物 B 会生成一个插入意向锁，然后将锁的状态设置为等待状态（<strong>MySQL加锁时，是先生成锁结构，然后设置锁的状态，如果锁状态是等待状态，并不是意味着事务成功获取到了锁，只有当锁状态为正常状态时，才代表事务成功获取到了锁</strong>），此时事务 B 就会发生阻塞，直到事务 A 提交了事务。</p>
+<ol>
+<li><p>插入意向锁名字虽然有意向锁（表锁），但是它并<strong>不是意向锁，它是一种特殊的间隙锁，属于行级别锁</strong></p>
+</li>
+<li><p>如果说间隙锁锁住的是一个区间，那么「插入意向锁」锁住的就是一个点。因而从这个角度来说，插入意向锁确实是一种特殊的间隙锁</p>
+</li>
+<li><p>插入意向锁与间隙锁的另一个非常重要的差别是：尽管「插入意向锁」也属于间隙锁，但两个事务却不能在同一时间内，一个拥有间隙锁，另一个拥有该间隙区间内的插入意向锁（当然，插入意向锁如果不在间隙锁区间内则是可以的）</p>
+</li>
+<li><p>插入意向锁与间隙锁的另一个非常重要的差别是：尽管「插入意向锁」也属于间隙锁，但两个事务却不能在同一时间内，一个拥有间隙锁，另一个拥有该间隙区间内的插入意向锁（当然，插入意向锁如果不在间隙锁区间内则是可以的）</p>
+</li>
+</ol>
+<h4 id="页锁"><a href="#页锁" class="headerlink" title="页锁"></a>页锁</h4><p>  除了表锁、行锁外，MySQL还有一种相对偏中性的<code>页级</code>锁，页锁是MySQL中比较独特的一种锁定级别，在其他数据库管理软件中也并不是太常见。页级锁定的特点是锁定颗粒度介于行级锁定与表级锁之间，所以获取锁定所需要的资源开销，以及所能提供的并发处理能力也同样是介于上面二者之间。另外，页级锁定和行级锁定一样，会发生死锁。使用页级锁定的主要是BerkeleyDB存储引擎</p>
+<h4 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h4><p>  从锁的角度来说，表级锁更适合于以查询为主，只有少量按索引条件更新数据的应用，如Web应用；而行级锁则更适合于有大量按索引条件并发更新数据的情况，同时又有并发查询的应用场景</p>
+<h4 id="全局锁"><a href="#全局锁" class="headerlink" title="全局锁"></a>全局锁</h4><p>  全局锁是对整个数据库实例加锁。使用场景一般在<code>全库逻辑备份</code>时，MySQL提供加全局读锁的命令：**<code>Flush tables with read lock</code> (FTWRL)**，这个命令可以使整个库处于只读状态。使用该命令之后，数据更新语句、数据定义语句和更新类事务的提交语句等修改数据库的操作都会被阻塞。</p>
+<p>  还有一种锁全局的方式：<code>set global readonly=true</code> ，相当于将整个库设置成只读状态，但这种修改global配置量级较重，和全局锁不同的是：如果执行<code>Flush tables with read lock</code> 命令后，如果客户端发生异常断开，那么MySQL会自动释放这个全局锁，整个库回到可以正常更新的状态。但将库设置为readonly后，客户端发生异常断开，数据库依旧会保持readonly状态，会导致整个库长时间处于不可写状态。</p>
+<p>两者对比：</p>
+<p>（1）在有些系统中，readonly 的值会被用来做其他逻辑，比如用来判断一个库是主库还是备库（从库只负责读，只有readonly权限）。因此修改 全局global 变量的方式影响面更大 </p>
+<p>（2）在异常处理机制上有差异：如果执行<code>FTWRL 命令之后由于客户端发生异常断开，那么 MySQL 会自动释放这个全局锁</code>，整个库回到可以正常更新的状态。而将整个库设置为 readonly 之后，如果客户端发生异常，则数据库就会一直保持 readonly 状态，这样会导致整个库长时间处于不可写状态，风险较高</p>
+<p>（3）readonly 对super用户权限无效：业务的更新不只是增删改数据（DML)，还有可能是加字段等修改表结构的操作（DDL）。不论是哪种方法，一个库被全局锁上以后，你要对里面任何一个表做加字段操作，都会被锁住</p>
+<h3 id="按锁级别"><a href="#按锁级别" class="headerlink" title="按锁级别"></a>按锁级别</h3><h4 id="共享（读）锁"><a href="#共享（读）锁" class="headerlink" title="共享（读）锁"></a>共享（读）锁</h4><p>即S锁，读锁是可以并发获取的（共享的），一个事务对数据对象 A 加了 S 锁，可以对 A 进行读取操作，但是不能进行更新操作。加锁期间其它事务能对 A 加 S 锁，但是不能加 X 锁</p>
+<h4 id="排它（写）锁"><a href="#排它（写）锁" class="headerlink" title="排它（写）锁"></a>排它（写）锁</h4><p>即X锁，写锁只能给一个事务处理（排他的）。当你想获取写锁时，需要等待之前的读锁都释放后方可加写锁；而当你想获取读锁时，只要该数据没有被写锁锁住，都可以获取到读锁</p>
+<p>读锁与写锁均属于行级锁！</p>
+<h4 id="意向锁"><a href="#意向锁" class="headerlink" title="意向锁"></a>意向锁</h4><p>意向锁属于表级锁，其设计目的主要是为了在一个事务中揭示下一行将要被请求锁的类型。InnoDB 中的两个表锁：</p>
+<p>意向共享锁（IS）：表示事务准备给数据行加入共享锁，也就是说一个数据行加共享锁前必须先取得该表的IS锁；</p>
+<p>意向排他锁（IX）：类似上面，表示事务准备给数据行加入排他锁，说明事务在一个数据行加排他锁前必须先取得该表的IX锁</p>
+<p>（1）InnoDB为了让表锁和行锁共存而使用了意向锁，举个例子：事务A锁住表中的<strong>一行（写锁）</strong>。事务B锁住<strong>整个表（写锁）</strong>，此时会发现一个很明显的问题：事务A既然锁住了某一行，其他事务就不可能修改这一行。这与”事务B锁住整个表就能修改表中的任意一行“形成了冲突。所以，<u>没有意向锁的时候，行锁与表锁共存就会存在问题！</u></p>
+<p>（2）意向锁是<strong>表级锁</strong>的一种，它是由数据库引擎自行维护的，用户自己无需也无法操作意向锁，有了意向锁之后，前面例子中的事务A在申请行锁（写锁）之前，数据库会自动先给事务A申请表的意向排他锁。当事务B去申请表的写锁时就会失败，因为表上有意向排他锁（A申请到的）之后事务B申请表的写锁时会被阻塞。</p>
+<p>（3）所以，意向锁的作用就是：当一个事务在需要获取资源的锁定时，如果该资源已经被排他锁占用，则数据库会自动给该事务申请一个该表的意向锁。如果自己需要一个共享锁定，就申请一个意向共享锁。如果需要的是某行（或者某些行）的排他锁定，则申请一个意向排他锁（意向锁能够将检查行锁的时间复杂度由 O(n) 变成 O(1)，其加锁的具体做法就是，<code>当一个事务想要获取表中某一行的（共享/排他）锁的时候，它会自动尝试给当前表的加上意向（共享/排他）锁</code>）。</p>
+<p>（4）意向锁它只会和表锁具有互斥性，不会影响行锁的加锁。事务获取行锁的时候会先尝试获取意向锁（与表锁进行竞争），如果成功，那么会再去竞争相应的行锁。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/image-20191207214442687.png"></p>
+<h3 id="封锁协议"><a href="#封锁协议" class="headerlink" title="封锁协议"></a>封锁协议</h3><p>1级封锁协议（对应read uncommitted）</p>
+<p><strong>定义:</strong> 事务T在修改数据data之前必须先对其加X锁，直到事务结束才释放。</p>
+<blockquote>
+<p>事务结束包括正常结束和非正常结束（ROLLBACK）。</p>
+</blockquote>
+<p>1级封锁协议可防止修改丢失，并保证事务T是可恢复的，这里的”<strong>修改丢失</strong>“指的是事务T内的修改, 在事务T提交或回滚之前, 不可能发生”被其他事务修改覆盖”的情况，然而在1级封锁协议中，如果仅仅是读数据不对其进行修改，是不需要加锁的，所以它不能保证可重复读和不读”脏”数据</p>
+<p>2级封锁协议（对应read committed）</p>
+<p><strong>定义:</strong> 1级封锁协议 + “事务T在读取数据data之前必须先对其加S锁，<strong>读完后</strong>即可释放S锁”。</p>
+<p><strong>效果:</strong> 2级封锁协议除防止了修改丢失，还可进一步防止读”脏”数据。</p>
+<p>3级封锁协议（对应repeatable read）</p>
+<p><strong>定义:</strong> 1级封锁协议 + “事务T在读取数据data之前必须先对其加S锁，<strong>直到事务结束</strong>才释放S锁”。</p>
+<p>与2级协议的定义对比逐字一下:</p>
+<p>1级封锁协议 + “事务T在读取数据data之前必须先对其加S锁，读完后即可释放S锁<br>1级封锁协议 + “事务T在读取数据data之前必须先对其加S锁，直到事务结束才释放S锁</p>
+<p><strong>效果:</strong> 3级封锁协议除防止了修改丢失和不读’脏’数据外，还进一步防止了不可重复读（事务T内读取数据时, 在事务结束之前都不会释放S锁, 所以就不存在其他事务”修改”的可能性(原因: S和X锁互斥), 所以就没有”脏读”和”可重复读”的情况）</p>
+<p>4级封锁协议（对应serialization）</p>
+<p>4级封锁协议是对3级封锁协议的增强，其实现机制也最为简单，<strong>直接对事务中所读取或者更改的数据所在的表加表锁</strong>，也就是说，其他事务不能读&#x2F;写该表中的任何数据。这样五类并发问题都得以避免！</p>
+<p>两段锁协议：指事务必须分成两个阶段对数据进行加锁和解锁，第一段是获得封锁，也称扩展阶段-&gt;事务可以获得任何数据项上任何类型的锁，但是不能释放锁;第二段是释放封锁，也称收缩阶段-&gt;事务可以释放任何数据项上任何类型的锁，但是不能获得锁(两段锁协议是可串行化的充分条件，不是必要条件)</p>
+<h5 id="隐式锁定"><a href="#隐式锁定" class="headerlink" title="隐式锁定"></a>隐式锁定</h5><p>innodb存储引擎采用两阶段锁定协议,会根据隔离级别在需要的时候自动加锁，并且所有的锁都是在同一时刻被释放，这被称为隐式锁定。隐式锁定在事务的执行过程中会进行锁定,锁只有在commit或rollback的时候才会同时被释放</p>
+<p>隐式上锁（默认，自动加锁自动释放）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">/</span><span class="operator">/</span>不会上锁</span><br><span class="line"><span class="keyword">insert</span>、<span class="keyword">update</span>、<span class="keyword">delete</span> <span class="operator">/</span><span class="operator">/</span>上写锁</span><br></pre></td></tr></table></figure>
+
+<p>显式上锁（手动）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tableName lock <span class="keyword">in</span> share mode;<span class="operator">/</span><span class="operator">/</span>读锁</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tableName <span class="keyword">for</span> <span class="keyword">update</span>;<span class="operator">/</span><span class="operator">/</span>写锁解锁（手动）</span><br></pre></td></tr></table></figure>
+
+
+
+<p>解锁（手动）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 提交事务（<span class="keyword">commit</span>）</span><br><span class="line"><span class="number">2.</span> 回滚事务（<span class="keyword">rollback</span>）</span><br><span class="line"><span class="number">3.</span> kill 阻塞进程</span><br></pre></td></tr></table></figure>
+
+
+
+<p>InnoDB 也可以使用特定的语句进行显示锁定：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ... LOCK <span class="keyword">In</span> SHARE MODE;</span><br><span class="line"><span class="keyword">SELECT</span> ... <span class="keyword">FOR</span> <span class="keyword">UPDATE</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="多版本并发控制MVCC"><a href="#多版本并发控制MVCC" class="headerlink" title="多版本并发控制MVCC"></a>多版本并发控制MVCC</h3><p>多版本并发控制（Multi-Version Concurrency Control, MVCC）是 MySQL 的 InnoDB 存储引擎实现隔离级别的一种具体方式，用于实现提交读和可重复读这两种隔离级别。而未提交读隔离级别总是读取最新的数据行，要求很低，无需使用 MVCC。可串行化隔离级别需要对所有读取的行都加锁，单纯使用 MVCC 无法实现。</p>
+<p>在封锁一节中提到，加锁能解决多个事务同时执行时出现的并发一致性问题。在实际场景中读操作往往多于写操作，因此又引入了读写锁来避免不必要的加锁操作，例如读和读没有互斥关系。读写锁中读和写操作仍然是互斥的，而 MVCC 利用了多版本的思想，写操作更新最新的版本快照，而读操作去读旧版本快照，没有互斥关系，这一点和<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jmcui/p/12377081.html">CopyOnWrite</a> 类似，在 MVCC 中事务的修改操作（DELETE、INSERT、UPDATE）会为数据行新增一个版本快照。</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Mysql/">Mysql</a><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></div><div class="post_share"><div class="addthis_inline_share_toolbox"></div><script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=null" async="async"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/01/12/SpringSecurity/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/jwt.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">SpringSecurity</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/Monstercat.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">amonstercat</div><div class="author-info__description">-an amateur coder-</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/amonstercat"><i class="fas fa-cat"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://t.me/aMonstercat" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a><a class="social-icon" href="https://github.com/amonstercat" target="_blank" title="Github"><i class="fab fa-github-alt"></i></a><a class="social-icon" href="mailto:amonstercattt@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a><a class="social-icon" href="https://twitter.com/aMonstercatt" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">Having fun</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%82%B2%E8%A7%82%EF%BC%88%E4%B9%90%E8%A7%82%EF%BC%89%E9%94%81"><span class="toc-number">1.</span> <span class="toc-text">悲观（乐观）锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E9%94%81%E7%B2%92%E5%BA%A6"><span class="toc-number">2.</span> <span class="toc-text">按锁粒度</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8%E9%94%81"><span class="toc-number">2.1.</span> <span class="toc-text">表锁</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%83%E6%95%B0%E6%8D%AE%E9%94%81"><span class="toc-number">2.1.1.</span> <span class="toc-text">元数据锁</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Auto-Inc%E9%94%81"><span class="toc-number">2.1.2.</span> <span class="toc-text">Auto-Inc锁</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%8C%E9%94%81"><span class="toc-number">2.2.</span> <span class="toc-text">行锁</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Record-Lock"><span class="toc-number">2.2.1.</span> <span class="toc-text">Record Lock</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Gap-Lock"><span class="toc-number">2.2.2.</span> <span class="toc-text">Gap Lock</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Next-Key-Lock"><span class="toc-number">2.2.3.</span> <span class="toc-text">Next-Key Lock</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E6%84%8F%E5%90%91%E9%94%81"><span class="toc-number">2.2.4.</span> <span class="toc-text">插入意向锁</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B5%E9%94%81"><span class="toc-number">2.3.</span> <span class="toc-text">页锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">2.4.</span> <span class="toc-text">适用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E9%94%81"><span class="toc-number">2.5.</span> <span class="toc-text">全局锁</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E9%94%81%E7%BA%A7%E5%88%AB"><span class="toc-number">3.</span> <span class="toc-text">按锁级别</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B1%E4%BA%AB%EF%BC%88%E8%AF%BB%EF%BC%89%E9%94%81"><span class="toc-number">3.1.</span> <span class="toc-text">共享（读）锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%92%E5%AE%83%EF%BC%88%E5%86%99%EF%BC%89%E9%94%81"><span class="toc-number">3.2.</span> <span class="toc-text">排它（写）锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%84%8F%E5%90%91%E9%94%81"><span class="toc-number">3.3.</span> <span class="toc-text">意向锁</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%81%E9%94%81%E5%8D%8F%E8%AE%AE"><span class="toc-number">4.</span> <span class="toc-text">封锁协议</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%9A%90%E5%BC%8F%E9%94%81%E5%AE%9A"><span class="toc-number">4.0.1.</span> <span class="toc-text">隐式锁定</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%89%88%E6%9C%AC%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6MVCC"><span class="toc-number">5.</span> <span class="toc-text">多版本并发控制MVCC</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/01/16/mysql-%E9%94%81/" title="Mysql-锁机制"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/investigating-locks-in-mysql.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Mysql-锁机制"/></a><div class="content"><a class="title" href="/2023/01/16/mysql-%E9%94%81/" title="Mysql-锁机制">Mysql-锁机制</a><time datetime="2023-01-16T10:00:00.000Z" title="Created 2023-01-16 18:00:00">2023-01-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/12/SpringSecurity/" title="SpringSecurity"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/jwt.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringSecurity"/></a><div class="content"><a class="title" href="/2023/01/12/SpringSecurity/" title="SpringSecurity">SpringSecurity</a><time datetime="2023-01-12T10:00:00.000Z" title="Created 2023-01-12 18:00:00">2023-01-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/10/Rocketmq/" title="Rocketmq"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/rocketmq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Rocketmq"/></a><div class="content"><a class="title" href="/2023/01/10/Rocketmq/" title="Rocketmq">Rocketmq</a><time datetime="2023-01-10T10:00:00.000Z" title="Created 2023-01-10 18:00:00">2023-01-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/08/SpringCloud-Gateway/" title="SpringCloud-Seata"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/seata.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringCloud-Seata"/></a><div class="content"><a class="title" href="/2023/01/08/SpringCloud-Gateway/" title="SpringCloud-Seata">SpringCloud-Seata</a><time datetime="2023-01-08T11:00:00.000Z" title="Created 2023-01-08 19:00:00">2023-01-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/07/SpringCloud-Feign/" title="SpringCloud-Feign"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/feign.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringCloud-Feign"/></a><div class="content"><a class="title" href="/2023/01/07/SpringCloud-Feign/" title="SpringCloud-Feign">SpringCloud-Feign</a><time datetime="2023-01-07T14:00:00.000Z" title="Created 2023-01-07 22:00:00">2023-01-07</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By amonstercat</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Having fun!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="Chat"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="100" alpha="0.5" zIndex="-1" mobile="true" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
