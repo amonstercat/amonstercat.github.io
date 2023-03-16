@@ -1,0 +1,327 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>HTTP-TCP | Blog</title><meta name="keywords" content="TCP,HTTP"><meta name="author" content="amonstercat"><meta name="copyright" content="amonstercat"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="计算机网络复习HTTP缓存强制缓存：浏览器不会请求服务器，直接使用本地缓存： 返回状态码200 （from memory cache -&gt;from disk cache ）,利用Expires（过期时间）实现强缓存 协商缓存：浏览器要先请求服务器看其是否可以使用本地缓存，服务器返回304响应码告知浏览器可以使用本地缓存 ，协商缓存基于两种头部实现： （1）Last-Modified————I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP-TCP">
+<meta property="og:url" content="http://example.com/2023/02/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="计算机网络复习HTTP缓存强制缓存：浏览器不会请求服务器，直接使用本地缓存： 返回状态码200 （from memory cache -&gt;from disk cache ）,利用Expires（过期时间）实现强缓存 协商缓存：浏览器要先请求服务器看其是否可以使用本地缓存，服务器返回304响应码告知浏览器可以使用本地缓存 ，协商缓存基于两种头部实现： （1）Last-Modified————I">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/how-http-works.png">
+<meta property="article:published_time" content="2023-02-20T05:00:00.000Z">
+<meta property="article:modified_time" content="2023-03-16T16:54:51.968Z">
+<meta property="article:author" content="amonstercat">
+<meta property="article:tag" content="TCP">
+<meta property="article:tag" content="HTTP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/how-http-works.png"><link rel="shortcut icon" href="/img/boxertocat_octodex.jpg"><link rel="canonical" href="http://example.com/2023/02/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HTTP-TCP',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-17 00:54:51'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="themes/butterfly/source/css/font.css"><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/Monstercat.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">34</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-eye-low-vision"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/how-http-works.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-eye-low-vision"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">HTTP-TCP<a class="post-edit-link" href="null_posts/计算机网络复习.md" title="Edited on" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-02-20T05:00:00.000Z" title="Created 2023-02-20 13:00:00">2023-02-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-03-16T16:54:51.968Z" title="Updated 2023-03-17 00:54:51">2023-03-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">学习记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word count:</span><span class="word-count">6.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading time:</span><span>19min</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="HTTP-TCP"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="计算机网络复习"><a href="#计算机网络复习" class="headerlink" title="计算机网络复习"></a>计算机网络复习</h1><h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>强制缓存：浏览器不会请求服务器，直接使用本地缓存： 返回状态码200 （from memory cache -&gt;from disk cache ）,利用Expires（过期时间）实现强缓存</p>
+<p>协商缓存：浏览器要先请求服务器看其是否可以使用本地缓存，服务器返回304响应码告知浏览器可以使用本地缓存 ，协商缓存基于两种头部实现：</p>
+<p>（1）<code>Last-Modified————If Modified-Since</code>：服务器收到请求头后发现带有If-Modified-Since，立即与被请求资源的最后修改时间Last-Modified进行比较，如果最后修改时间大（新数据），则返回最新的资源+状态码200-OK；否则说明资源无修改返回304状态码</p>
+<blockquote>
+<p>补充：3xx 类状态码表示客户端请求的资源发生了变动，需要客户端用新的 URL 重新发送请求获取资源，也就是重定向</p>
+</blockquote>
+<ul>
+<li>301 Moved Permanently表示永久重定向，说明请求的资源已经不存在了，需改用新的 URL 再次访问。</li>
+<li>302 Found表示临时重定向，说明请求的资源还在，但暂时需要用另一个 URL 来访问。</li>
+<li>301 和 302 都会在响应头里使用字段 Location，指明后续要跳转的 URL，浏览器会<strong>自动</strong>重定向新的 URL。</li>
+<li>304 Not Modified不具有跳转的含义，表示资源未修改，重定向已存在的缓冲文件，也称缓存重定向，也就是告诉客户端可以继续使用缓存资源，用于缓存控制。</li>
+</ul>
+<h3 id="新特性"><a href="#新特性" class="headerlink" title="新特性"></a>新特性</h3><ol>
+<li><p>HTTP1.1</p>
+<p>（1）长连接 <code>Keep-Alive</code>:HTTP 持久性连接（也称为HTTP keep-alive或HTTP 连接重复使用）是一种概念，<strong>允许单个TCP 连接发送和接收多个HTTP 请求&#x2F;响应，而不是为每个请求&#x2F;响应对打开新连接</strong>（连接池技术）</p>
+<p>（2）管道<code>PipeLine</code>：即在同一个 TCP 连接里面，客户端可以发起多个请求，只要第一个请求发出去了，不必等其回来就可以发第二个请求出去，这样<strong>减少整体的响应时间</strong>，但是服务端响应的时候需要按照客户端请求的顺序来响应。<strong>HTTP&#x2F;1.1 管道解决了请求的队头阻塞（即客户端发出第一个请求后无需等待响应即可发送第二个请求），但是没有解决响应的队头阻塞</strong></p>
+</li>
+<li><p>HTTP2</p>
+<p>HTTP&#x2F;2 协议是基于 HTTPS 的，相比 HTTP&#x2F;1.1 性能上主要有：</p>
+<p>（1）<strong>头部压缩</strong>： HTTP&#x2F;2 会<strong>压缩头</strong>（Header）如果你同时发出多个请求，他们的头是一样的或是相似的，那么，协议会帮你<strong>消除重复的部分</strong></p>
+<p>（2）<strong>并发传输</strong>：引出 Stream 概念，多个 Stream 复用在一条 TCP 连接，<strong>针对不同的 HTTP 请求用独一无二的 Stream ID 来区分，接收端可以通过 Stream ID 有序组装成 HTTP 消息，不同 Stream 的帧是可以乱序发送的，因此可以并发不同的 Stream ，也就是 HTTP&#x2F;2 可以并行交错地发送请求和响应</strong></p>
+<p>（3）<strong>服务器推送</strong>：HTTP&#x2F;2 还在一定程度上改善了传统的「请求 - 应答」工作模式，服务端不再是被动地响应，可以<strong>主动</strong>向客户端发送消息（客户端和服务器<strong>双方都可以建立 Stream</strong>， Stream ID 也是有区别的，客户端建立的 Stream 必须是奇数号，而服务器建立的 Stream 必须是偶数号）</p>
+</li>
+<li><p>HTTP3</p>
+</li>
+</ol>
+<p> 前面我们知道了 HTTP&#x2F;1.1 和 HTTP&#x2F;2 都有队头阻塞的问题：</p>
+<ul>
+<li>HTTP&#x2F;1.1 中的管道（ pipeline）虽然解决了请求的队头阻塞，但是<strong>没有解决响应的队头阻塞</strong>，因为服务端需要按顺序响应收到的请求，如果服务端处理某个请求消耗的时间比较长，那么只能等响应完这个请求后， 才能处理下一个请求，这属于 HTTP 层队头阻塞。</li>
+<li>HTTP&#x2F;2 虽然通过多个请求复用一个 TCP 连接解决了 HTTP 的队头阻塞 ，但是<strong>一旦发生丢包，就会阻塞住所有的 HTTP 请求</strong>，这属于 TCP 层队头阻塞。</li>
+</ul>
+<p>HTTP&#x2F;2 队头阻塞的问题是因为 TCP，所以 <strong>HTTP&#x2F;3 把 HTTP 下层的 TCP 协议改成了 UDP(UDP 发送是不管顺序，也不管丢包的，所以不会出现像 HTTP&#x2F;2 队头阻塞的问题,而且基于 UDP 的 QUIC 协议 可以实现类似 TCP 的可靠性传输)</strong></p>
+<h3 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h3><p>（1）混合加密：HTTPS 采用的是<strong>对称加密</strong>和<strong>非对称加密</strong>结合的「混合加密」方式</p>
+<ul>
+<li>在通信建立前采用<strong>非对称加密</strong>的方式交换「会话秘钥」，后续就不再使用非对称加密。</li>
+<li>在通信过程中全部使用<strong>对称加密</strong>的「会话秘钥」的方式加密明文数据。</li>
+</ul>
+<p>（2）摘要算法+数字签名：</p>
+<ul>
+<li>对密文进行哈希运算</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/%E6%91%98%E8%A6%81%E7%AE%97%E6%B3%95.jpg" alt="MAC"></p>
+<ul>
+<li>同时对计算后的哈希值进行签名（私钥加密-公钥解密）</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D.jpg" alt="数字签名"></p>
+<p>（3）数字证书（CA机构）</p>
+<p>  CA对服务器提供的公钥进行数字签名（私钥加密），并将服务器的公钥放在数字证书中，客户端通过CA公钥解密数字证书，既得到了服务器的公钥，又证明了权威性：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/CA.jpg" alt="Certificate-Authentication"></p>
+<h4 id="SSL-x2F-TLS协议"><a href="#SSL-x2F-TLS协议" class="headerlink" title="SSL&#x2F;TLS协议"></a>SSL&#x2F;TLS协议</h4><p>SSL&#x2F;TLS 基本流程如下：</p>
+<ul>
+<li>客户端向服务器索要并验证服务器的公钥。</li>
+<li>双方协商生产「会话秘钥」。</li>
+<li>双方采用「会话秘钥」进行加密通信。</li>
+</ul>
+<p>前两步即TLS的建立，基于 RSA 算法的TLS四次握手过程如下:<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/23-HTTPS%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.jpg"></p>
+<p><em>1. ClientHello</em><br>首先，由客户端向服务器发起加密通信请求，也就是 <code>ClientHello</code> 请求。</p>
+<p>在这一步，客户端主要向服务器发送以下信息：</p>
+<p>（1）客户端支持的 TLS 协议版本，如 TLS 1.2 版本。</p>
+<p>（2）客户端生产的随机数（<code>Client Random</code>），后面用于生成「会话秘钥」条件之一。</p>
+<p>（3）客户端支持的密码套件列表，如 RSA 加密算法。</p>
+<p><em>2. SeverHello</em></p>
+<p>服务器收到客户端请求后，向客户端发出响应，也就是 <code>SeverHello</code>。服务器回应的内容有如下内容：</p>
+<p>（1）确认 TLS 协议版本，如果浏览器不支持，则关闭加密通信。</p>
+<p>（2）服务器生产的随机数（<code>Server Random</code>），也是后面用于生产「会话秘钥」条件之一。</p>
+<p>（3）确认的密码套件列表，如 RSA 加密算法。</p>
+<p>（4）服务器的数字证书。</p>
+<p><em>3.客户端回应</em></p>
+<p>客户端收到服务器的回应之后，首先通过浏览器或者操作系统中的 CA 公钥，确认服务器的数字证书的真实性。</p>
+<p>如果证书没有问题，客户端会<strong>从数字证书中取出服务器的公钥</strong>，然后使用它加密报文，向服务器发送如下信息：</p>
+<p>（1）一个随机数（<code>pre-master key</code>）。<strong>该随机数会被服务器公钥加密（因为前两次交互产生的随机数有可能被窃听到）</strong>。</p>
+<p>（2）加密通信算法改变通知，表示随后的信息都将用「会话秘钥」加密通信。</p>
+<p>（3）客户端握手结束通知，表示客户端的握手阶段已经结束。这一项同时把之前所有内容的发生的数据做个摘要，用来供服务端校验。</p>
+<p>上面第一项的随机数是整个握手阶段的第三个随机数，会发给服务端，所以这个随机数客户端和服务端都是一样的。</p>
+<p><strong>服务器和客户端有了这三个随机数（Client Random、Server Random、pre-master key），接着就用双方协商的加密算法，各自生成本次通信的「会话秘钥」</strong>。</p>
+<p><em>4. 服务器的最后回应</em></p>
+<p>服务器收到客户端的第三个随机数（<code>pre-master key</code>）之后，通过协商的加密算法，计算出本次通信的「会话秘钥」。</p>
+<p>然后，向客户端发送最后的信息：</p>
+<p>（1）加密通信算法改变通知，表示随后的信息都将用「会话秘钥」加密通信。</p>
+<p>（2）服务器握手结束通知，表示服务器的握手阶段已经结束。这一项同时把之前所有内容的发生的数据做个摘要，用来供客户端校验。</p>
+<p>至此，整个 TLS 的握手阶段全部结束。接下来，客户端与服务器进入加密通信(流程的第三阶段)，就完全是使用普通的 HTTP 协议，只不过用「会话秘钥」加密内容。</p>
+<h3 id="与RPC的对比"><a href="#与RPC的对比" class="headerlink" title="与RPC的对比"></a>与RPC的对比</h3><p>（1）服务发现：在 <strong>HTTP</strong> 中，你知道服务的域名，就可以通过 <strong>DNS 服务</strong>去解析得到它背后的 IP 地址，默认 80 端口。</p>
+<p>而 <strong>RPC</strong> 的话，就有些区别，一般会有专门的<strong>中间服务</strong>去保存服务名和IP信息，比如 <strong>Consul服务注册中心 ，甚至是 Redis</strong>。想要访问某个服务，就去这些中间服务去获得 IP 和端口信息。由于 DNS 也是服务发现的一种，所以也有基于 DNS 去做服务发现的组件，比如<strong>CoreDNS</strong></p>
+<p>（2）底层连接形式：以主流的 <strong>HTTP&#x2F;1.1</strong> 协议为例，其默认在建立底层 TCP 连接之后会一直保持这个连接（<strong>Keep Alive</strong>），之后的请求和响应都会复用这条连接。而 <strong>RPC</strong> 协议，也跟 HTTP 类似，也是通过建立 TCP 长链接进行数据交互，但不同的地方在于，RPC 协议一般还会再建个<strong>连接池</strong>，在请求量大的时候，建立多条连接放在池内，要发数据的时候就从池里取一条连接出来，<strong>用完放回去，下次再复用</strong></p>
+<p>（3）传输内容：主流的 HTTP&#x2F;1.1传的内容以字符串为主（无论是header还是body），在 Body 这块，它使用 <strong>Json</strong> 来<strong>序列化</strong>结构体数据<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/header-body.jpg"></p>
+<blockquote>
+<p>Headers里的一些参数说明</p>
+<p><code>Content-Type</code>: 用于服务器回应时，告诉客户端本次回复的数据是什么格式</p>
+<p><code>Accept-Encoding</code>:指定浏览器可以支持的web服务器返回内容压缩编码类型</p>
+<p><code>User-Agent </code>:指明发起请求的用户代理软件的应用类型、软件开发商以及版本号等</p>
+</blockquote>
+<p> 而 RPC 因为它定制化程度更高，可以采用体积更小的 Protobuf 或其他序列化协议去保存结构体数据，同时也不需要像 HTTP 那样考虑各种浏览器行为，比如 302 重定向跳转啥的。<strong>因此性能也会更好一些，这也是在公司内部微服务中抛弃 HTTP，选择使用 RPC 的最主要原因</strong></p>
+<h2 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h2><h3 id="头部格式"><a href="#头部格式" class="headerlink" title="头部格式"></a>头部格式</h3><p><strong>序列号</strong>：在建立连接时由计算机生成的随机数作为其初始值，通过 SYN 包传给接收端主机，每发送一次数据，就「累加」一次该「数据字节数」的大小。<strong>用来解决网络包乱序问题。</strong></p>
+<p><strong>控制位：</strong></p>
+<ul>
+<li><em>ACK</em>：该位为 <code>1</code> 时，「确认应答」的字段变为有效，TCP 规定除了最初建立连接时的 <code>SYN</code> 包之外该位必须设置为 <code>1</code> </li>
+<li><em>RST</em>：该位为 <code>1</code> 时，表示 TCP 连接中出现异常必须强制断开连接</li>
+<li><em>SYN</em>：该位为 <code>1</code> 时，表示希望建立连接，并在其「序列号」的字段进行序列号初始值的设定</li>
+<li><em>FIN</em>：该位为 <code>1</code> 时，表示今后不会再有数据发送，希望断开连接。当通信结束希望断开连接时，通信双方的主机之间就可以相互交换 <code>FIN</code> 位为 1 的 TCP 段</li>
+</ul>
+<h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.jpg" alt="TCP三次握手"></p>
+<ul>
+<li>一开始，客户端和服务端都处于 <code>CLOSE</code> 状态。先是服务端主动监听某个端口，处于 <code>LISTEN</code> 状态</li>
+<li>客户端会随机初始化序号（<code>client_isn</code>），将此序号置于 TCP 首部的「序号」字段中，同时把 <code>SYN</code> 标志位置为 <code>1</code>，表示 <code>SYN</code> 报文。接着把第一个 SYN 报文发送给服务端，表示向服务端发起连接，该报文不包含应用层数据，之后客户端处于 <code>SYN-SENT</code> 状态</li>
+<li>服务端收到客户端的 <code>SYN</code> 报文后，首先服务端也随机初始化自己的序号（<code>server_isn</code>），将此序号填入 TCP 首部的「序号」字段中，其次把 TCP 首部的「确认应答号」字段填入 <code>client_isn + 1</code>, 接着把 <code>SYN</code> 和 <code>ACK</code> 标志位置为 <code>1</code>。最后把该报文发给客户端，该报文也不包含应用层数据，之后服务端处于 <code>SYN-RCVD</code> 状态（<strong>SYN仅在前两次握手中置位1</strong>）</li>
+<li>客户端收到服务端报文后，还要向服务端回应最后一个应答报文，首先该应答报文 TCP 首部 <code>ACK</code> 标志位置为 <code>1</code> ，其次「确认应答号」字段填入 <code>server_isn + 1</code> ，最后把报文发送给服务端，这次报文可以携带客户到服务端的数据，之后客户端处于 <code>ESTABLISHED</code> 状态</li>
+<li>服务端收到客户端的应答报文后，也进入 <code>ESTABLISHED</code> 状态</li>
+</ul>
+<p><strong>重点来了，为什么是三次握手，以及缺少某一次握手会发生什么？</strong></p>
+<p>(1) 为了防止旧的重复连接初始化造成混乱（主要原因！）</p>
+<p>  客户端连续发送多次 SYN（都是同一个四元组）建立连接的报文，在<strong>网络拥堵</strong>情况下：</p>
+<ul>
+<li><p>一个「旧 SYN 报文 SegNum&#x3D;90」比「最新的 SYN 报文 SegNum&#x3D;100 」 早到达了服务端，那么此时服务端就会回一个 <code>SYN + ACK</code> 报文给客户端，此报文中的确认号是 91（90+1）。</p>
+</li>
+<li><p>客户端收到后，发现自己期望收到的确认号应该是 100 + 1，而不是 90 + 1，于是就会回 RST 报文</p>
+</li>
+<li><p>服务端收到 RST 报文后，就会释放连接</p>
+</li>
+<li><p>后续最新的 SYN 抵达了服务端后，客户端与服务端就可以正常的完成三次握手了</p>
+<p>**如果是两次握手连接，就无法阻止历史连接 : **在两次握手的情况下，服务端在收到 SYN 报文后，就进入 ESTABLISHED 状态，意味着这时可以给对方发送数据，但是客户端此时还没有进入 ESTABLISHED 状态，假设这次是历史连接，客户端判断到此次连接为历史连接，那么就会回 RST 报文来断开连接，而服务端在第一次握手的时候就进入 ESTABLISHED 状态，所以它可以发送数据的，但是它并不知道这个是历史连接，它只有在收到 RST 报文后，才会断开连接,如果采用两次握手建立 TCP 连接的场景下，服务端在向客户端发送数据前，并没有阻止掉历史连接，导致服务端建立了一个历史连接，又白白发送了数据，妥妥地浪费了服务端的资源</p>
+</li>
+</ul>
+<p>(2) 同步双方初始序列号</p>
+<p>TCP 协议的通信双方， 都必须维护一个「序列号」， 序列号是可靠传输的一个关键因素，它的作用：</p>
+<ul>
+<li><p>接收方可以去除重复的数据；</p>
+</li>
+<li><p>接收方可以根据数据包的序列号按序接收；</p>
+</li>
+<li><p>可以标识发送出去的数据包中， 哪些是已经被对方收到的（通过 ACK 报文中的序列号知道）；</p>
+<p>而TCP是全双工模式（双方都有发送接收数据的能力），故实际上应该是四次握手，但由于<strong>第二步和第三步可以优化成一步</strong>，所以就成了「三次握手」，而两次握手只保证了一方的初始序列号能被对方成功接收，没办法保证双方的初始序列号都能被确认接收</p>
+<p>如果每次建立连接，客户端和服务端的初始化序列号都是一样的话，很容易出现历史报文被下一个相同四元组的连接接收的问题:</p>
+</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/%E5%88%9D%E5%A7%8B%E5%BA%8F%E5%88%97%E5%8F%B7%E7%9B%B8%E5%90%8C.jpg"></p>
+<p>MTU MSS</p>
+<ul>
+<li><code>MTU</code>：一个网络包的最大长度，以太网中一般为 <code>1500</code> 字节；</li>
+<li><code>MSS</code>：除去 IP 和 TCP 头部之后，一个网络包所能容纳的 TCP 数据的最大长度；</li>
+</ul>
+<p> 为了达到最佳的传输效能， TCP 协议在<strong>建立连接的时候通常要协商双方的 MSS 值</strong>，当 TCP 层发现数据超过 MSS 时，则就先会进行分片，当然由它形成的 IP 包的长度也就不会大于 MTU ，经过 TCP 层分片后，如果一个 TCP 分片丢失后，<strong>进行重发时也是以 MSS 为单位</strong>，而不用重传所有的分片（如果采用IP分片，整个 IP 报文的所有分片都得重传，且由于 IP 层本身没有超时重传机制，它由传输层的 TCP 来负责超时和重传），大大增加了重传的效率</p>
+<h4 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h4><p>（1）第一次握手丢失后，会发生什么？</p>
+<p>客户端第一次握手发送的SYN报文丢失后，客户端会迟迟收不到服务端的 SYN-ACK 报文（第二次握手），此时就会触发「超时重传」机制，重传 SYN 报文，而且<strong>重传的 SYN 报文的序列号都是一样的</strong></p>
+<p>（2）第二次握手丢失了，会发生什么？</p>
+<p>第二次握手报文里是包含对客户端的第一次握手的 ACK 确认报文，所以，如果客户端迟迟没有收到第二次握手，那么客户端就觉得可能自己的 SYN 报文（第一次握手）丢失了，于是<strong>客户端就会触发超时重传机制，重传 SYN 报文</strong>，然后，因为第二次握手中包含服务端的 SYN 报文，所以当客户端收到后，需要给服务端发送 ACK 确认报文（第三次握手），服务端才会认为该 SYN 报文被客户端收到了，所以如果第二次握手丢失了，服务端就收不到第三次握手，于是<strong>服务端这边也会触发超时重传机制，重传 SYN-ACK 报文</strong></p>
+<p>（3）第三次握手丢失了，会发生什么？</p>
+<p>第三次握手的 ACK 是对第二次握手的 SYN 的确认报文，所以当第三次握手丢失了，如果服务端那一方迟迟收不到这个确认报文，就会触发超时重传机制，重传 SYN-ACK 报文，直到收到第三次握手，或者达到最大重传次数</p>
+<p> （4） SYN攻击</p>
+<p>TCP 连接建立需要三次握手，假设攻击者短时间伪造不同 IP 地址的 <code>SYN</code> 报文，服务端每接收到一个 <code>SYN</code> 报文，就进入<code>SYN_RCVD</code> 状态，但服务端发送出去的 <code>ACK + SYN</code> 报文，无法得到未知 IP 主机的 <code>ACK</code> 应答，久而久之就会<strong>占满服务端的半连接队列</strong>，使得服务端不能为正常用户服务。正常情况下流程如下：</p>
+<ul>
+<li>当服务端接收到客户端的 SYN 报文时，会创建一个半连接的对象，然后将其加入到内核的「 SYN 队列」；</li>
+<li>接着发送 SYN + ACK 给客户端，等待客户端回应 ACK 报文；</li>
+<li>服务端接收到 ACK 报文后，从「 SYN 队列」取出一个半连接对象，然后创建一个新的连接对象放入到「 Accept 队列」；</li>
+<li>应用通过调用 <code>accpet()</code> socket 接口，从「 Accept 队列」取出连接对象</li>
+</ul>
+<p>SYN 攻击方式最直接的表现就会把 TCP 半连接队列打满，这样<strong>当 TCP 半连接队列满了，后续再在收到 SYN 报文就会丢弃</strong>，导致客户端无法和服务端建立连接</p>
+<h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.jpg" alt="四次挥手"></p>
+<ul>
+<li>客户端打算关闭连接，此时会发送一个 TCP 首部 <code>FIN</code> 标志位被置为 <code>1</code> 的报文，也即 <code>FIN</code> 报文，之后客户端进入 <code>FIN_WAIT_1</code> 状态。</li>
+<li>服务端收到该报文后，就向客户端发送 <code>ACK</code> 应答报文，接着服务端进入 <code>CLOSE_WAIT</code> 状态。</li>
+<li>客户端收到服务端的 <code>ACK</code> 应答报文后，之后进入 <code>FIN_WAIT_2</code> 状态。</li>
+<li>等待服务端处理完数据后，也向客户端发送 <code>FIN</code> 报文，之后服务端进入 <code>LAST_ACK</code> 状态。</li>
+<li>客户端收到服务端的 <code>FIN</code> 报文后，回一个 <code>ACK</code> 应答报文，之后进入 <code>TIME_WAIT</code> 状态</li>
+<li>服务端收到了 <code>ACK</code> 应答报文后，就进入了 <code>CLOSE</code> 状态，至此服务端已经完成连接的关闭。</li>
+<li>客户端在经过 <code>2MSL</code> 一段时间后，自动进入 <code>CLOSE</code> 状态，至此客户端也完成连接的关闭。</li>
+</ul>
+<p>有一点需要注意是：<strong>主动关闭连接的，才有 TIME_WAIT 状态</strong></p>
+<h4 id="常见问题-1"><a href="#常见问题-1" class="headerlink" title="常见问题"></a>常见问题</h4><p>（1）第一次挥手丢失了，会发生什么？</p>
+<p>如果第一次挥手丢失了，那么客户端迟迟收不到被动方的 ACK 的话，也就会触发超时重传机制，重传 FIN 报文，重发次数由 <code>tcp_orphan_retries</code> 参数控制，当客户端重传 FIN 报文的次数超过 <code>tcp_orphan_retries</code> 后，就不再发送 FIN 报文，则会在等待一段时间（时间为上一次超时时间的 2 倍），如果还是没能收到第二次挥手，那么直接进入到 <code>close</code> 状态</p>
+<p>（2）第二次挥手丢失了，会发生什么？</p>
+<p>如果服务端的第二次挥手丢失了，客户端就会触发超时重传机制，重传 FIN 报文，直到收到服务端的第二次挥手，或者达到最大的重传次数</p>
+<p>（3）第三次挥手丢失了，会发生什么？</p>
+<p>服务端处于 CLOSE_WAIT 状态时，调用了 close 函数，内核就会发出 FIN 报文，同时连接进入 LAST_ACK 状态，等待客户端返回 ACK 来确认连接关闭，如果迟迟收不到这个 ACK，服务端就会重发 FIN 报文，重发次数仍然由 <code>tcp_orphan_retrie</code>s 参数控制，这与客户端重发 FIN 报文的重传次数控制方式是一样的</p>
+<p>（4）第四次挥手丢失了，会发生什么？</p>
+<p>当客户端收到服务端的第三次挥手的 FIN 报文后，就会回 ACK 报文，也就是第四次挥手，此时客户端连接进入 <code>TIME_WAIT</code> 状态，如果第四次挥手的 ACK 报文没有到达服务端，服务端就会重发 FIN 报文，重发次数仍然由前面介绍过的 <code>tcp_orphan_retries</code> 参数控制</p>
+<p><strong>可以看出来无论是握手丢失还是挥手丢失，本质操作都是不断重传。。。</strong></p>
+<p>（5）为什么 TIME_WAIT 等待的时间是 2MSL？</p>
+<p>TIME_WAIT 等待 2 倍的 MSL，比较合理的解释是： 网络中可能存在来自发送方的数据包，当这些发送方的数据包被接收方处理后又会向对方发送响应，所以<strong>一来一回需要等待 2 倍的时间</strong>。比如，如果<strong>被动关闭方没有收到断开连接的最后的 ACK 报文，就会触发超时重发 <code>FIN</code> 报文，另一方接收到 FIN 后，会重发 ACK 给被动关闭方， 一来一去正好 2 个 MSL</strong>，可以看到 2MSL时长 这其实是相当于<strong>至少允许报文丢失一次</strong>。比如，若 ACK 在一个 MSL 内丢失，这样被动方重发的 FIN 会在第 2 个 MSL 内到达，TIME_WAIT 状态的连接可以应对</p>
+<p>被动关闭方若没有收到主动关闭方发送的最后一个ACK报文段，这就需要主动关闭方重新发送一次ACK报文段，为了确保被动关闭方收到了最后一个ACK报文段，并且所有旧的报文段都被丢弃，TCP需要等待2MSL时间</p>
+<p>（6）为什么需要 TIME_WAIT 状态？</p>
+<p>为了防止历史连接中的数据，被后面相同四元组的连接错误的接收，因此 TCP 设计了 TIME_WAIT 状态，状态会持续 <code>2MSL</code> 时长，这个时间<strong>足以让两个方向上的数据包都被丢弃，使得原来连接的数据包在网络中都自然消失，再出现的数据包一定都是新建立连接所产生的</strong></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/TCP/">TCP</a><a class="post-meta__tags" href="/tags/HTTP/">HTTP</a></div><div class="post_share"><div class="addthis_inline_share_toolbox"></div><script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=null" async="async"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/12/12/SpringSecurity/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/jwt.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">SpringSecurity</div></div></a></div><div class="next-post pull-right"><a href="/2023/02/16/mysql-%E9%94%81/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/investigating-locks-in-mysql.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Mysql-锁机制</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/Monstercat.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">amonstercat</div><div class="author-info__description">-an amateur coder-</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">34</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/amonstercat"><i class="fas fa-cat"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://t.me/aMonstercat" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a><a class="social-icon" href="https://github.com/amonstercat" target="_blank" title="Github"><i class="fab fa-github-alt"></i></a><a class="social-icon" href="mailto:amonstercattt@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a><a class="social-icon" href="https://twitter.com/aMonstercatt" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">Having fun</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0"><span class="toc-number">1.</span> <span class="toc-text">计算机网络复习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP"><span class="toc-number">1.1.</span> <span class="toc-text">HTTP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98"><span class="toc-number">1.1.1.</span> <span class="toc-text">缓存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E7%89%B9%E6%80%A7"><span class="toc-number">1.1.2.</span> <span class="toc-text">新特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTPS"><span class="toc-number">1.1.3.</span> <span class="toc-text">HTTPS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SSL-x2F-TLS%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">SSL&#x2F;TLS协议</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8ERPC%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">1.1.4.</span> <span class="toc-text">与RPC的对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP"><span class="toc-number">1.2.</span> <span class="toc-text">TCP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%B4%E9%83%A8%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">头部格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">三次握手</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">常见问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="toc-number">1.2.3.</span> <span class="toc-text">四次挥手</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98-1"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">常见问题</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/12/12/SpringSecurity/" title="SpringSecurity"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/jwt.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringSecurity"/></a><div class="content"><a class="title" href="/2023/12/12/SpringSecurity/" title="SpringSecurity">SpringSecurity</a><time datetime="2023-12-12T10:00:00.000Z" title="Created 2023-12-12 18:00:00">2023-12-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/" title="HTTP-TCP"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/how-http-works.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HTTP-TCP"/></a><div class="content"><a class="title" href="/2023/02/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/" title="HTTP-TCP">HTTP-TCP</a><time datetime="2023-02-20T05:00:00.000Z" title="Created 2023-02-20 13:00:00">2023-02-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/16/mysql-%E9%94%81/" title="Mysql-锁机制"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/investigating-locks-in-mysql.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Mysql-锁机制"/></a><div class="content"><a class="title" href="/2023/02/16/mysql-%E9%94%81/" title="Mysql-锁机制">Mysql-锁机制</a><time datetime="2023-02-16T10:00:00.000Z" title="Created 2023-02-16 18:00:00">2023-02-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/10/Rocketmq/" title="Rocketmq"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/rocketmq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Rocketmq"/></a><div class="content"><a class="title" href="/2023/01/10/Rocketmq/" title="Rocketmq">Rocketmq</a><time datetime="2023-01-10T10:00:00.000Z" title="Created 2023-01-10 18:00:00">2023-01-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/08/SpringCloud-Gateway/" title="SpringCloud-Seata"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/seata.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringCloud-Seata"/></a><div class="content"><a class="title" href="/2023/01/08/SpringCloud-Gateway/" title="SpringCloud-Seata">SpringCloud-Seata</a><time datetime="2023-01-08T11:00:00.000Z" title="Created 2023-01-08 19:00:00">2023-01-08</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By amonstercat</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Having fun!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="Chat"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="100" alpha="0.5" zIndex="-1" mobile="true" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
