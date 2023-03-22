@@ -1,0 +1,407 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Redis-复习 | Blog</title><meta name="keywords" content="Java,Redis,Redission"><meta name="author" content="amonstercat"><meta name="copyright" content="amonstercat"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="基本数据类型StringString 类型的底层的数据结构实现主要是 int 和 SDS（简单动态字符串）  SDS 不仅可以保存文本数据，还可以保存二进制数据。SDS 的所有 API 都会以处理二进制的方式来处理 SDS 存放在 buf[] 数组里的数据。所以 SDS 不光能存放文本数据，而且能保存图片、音频、视频、压缩文件这样的二进制数据 SDS 获取字符串长度的时间复杂度是 O(1) 因为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis-复习">
+<meta property="og:url" content="http://example.com/2023/03/01/Redis-%E5%A4%8D%E4%B9%A0(1)/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="基本数据类型StringString 类型的底层的数据结构实现主要是 int 和 SDS（简单动态字符串）  SDS 不仅可以保存文本数据，还可以保存二进制数据。SDS 的所有 API 都会以处理二进制的方式来处理 SDS 存放在 buf[] 数组里的数据。所以 SDS 不光能存放文本数据，而且能保存图片、音频、视频、压缩文件这样的二进制数据 SDS 获取字符串长度的时间复杂度是 O(1) 因为">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/Redis-all.jpg">
+<meta property="article:published_time" content="2023-03-01T07:00:00.000Z">
+<meta property="article:modified_time" content="2023-03-22T10:25:55.414Z">
+<meta property="article:author" content="amonstercat">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="Redission">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/Redis-all.jpg"><link rel="shortcut icon" href="/img/boxertocat_octodex.jpg"><link rel="canonical" href="http://example.com/2023/03/01/Redis-%E5%A4%8D%E4%B9%A0(1)/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Redis-复习',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-22 18:25:55'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="themes/butterfly/source/css/font.css"><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/Monstercat.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">35</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-eye-low-vision"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/Redis-all.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-eye-low-vision"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Redis-复习<a class="post-edit-link" href="null_posts/Redis-复习(1).md" title="Edited on" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-03-01T07:00:00.000Z" title="Created 2023-03-01 15:00:00">2023-03-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-03-22T10:25:55.414Z" title="Updated 2023-03-22 18:25:55">2023-03-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">学习记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word count:</span><span class="word-count">11k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading time:</span><span>36min</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Redis-复习"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><p>String 类型的底层的数据结构实现主要是 int 和 SDS（简单动态字符串）</p>
+<ul>
+<li><strong>SDS 不仅可以保存文本数据，还可以保存二进制数据</strong>。SDS 的所有 API 都会以处理二进制的方式来处理 SDS 存放在 <code>buf[]</code> 数组里的数据。所以 SDS 不光能存放文本数据，而且能保存图片、音频、视频、压缩文件这样的二进制数据</li>
+<li><strong>SDS 获取字符串长度的时间复杂度是 O(1)</strong> 因为 C 语言的字符串并不记录自身长度，所以获取长度的复杂度为 O(n)；而 SDS 结构里用 <code>len</code> 属性记录了字符串长度，所以复杂度为 <code>O(1)</code></li>
+</ul>
+<p>应用场景</p>
+<p>（1）String常用来缓存对象,有以下两种方式：</p>
+<p>直接缓存整个对象的JSON， <code>SET user:1 &#39;&#123;&quot;name&quot;:&quot;xiaolin&quot;, &quot;age&quot;:18&#125;&#39;</code></p>
+<p>采用将 key 进行分离为 user:ID:属性，采用 MSET 存储，用 MGET 获取各属性值，命令例子： <code>MSET user:1:name xiaolin user:1:age 18 </code></p>
+<p>（2）常规计数：因为 Redis 处理命令是单线程，所以执行命令的过程是原子的。因此 String 数据类型适合计数场景，比如计算访问次数、点赞、转发、库存数量</p>
+<p>（3）<strong>分布式锁</strong>：SET 命令有个 NX 参数可以实现「key不存在才插入」，可以用它来实现分布式锁：</p>
+<ul>
+<li>如果 key 不存在，则显示插入成功，可以用来表示加锁成功；</li>
+<li>如果 key 存在，则会显示插入失败，可以用来表示加锁失败。</li>
+</ul>
+<p>一般而言，还会对分布式锁加上过期时间，分布式锁的命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET lock_key unique_value NX PX 10000</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>lock_key 就是 key 键；</li>
+<li>unique_value 是客户端生成的唯一的标识；</li>
+<li>NX 代表只在 lock_key 不存在时，才对 lock_key 进行设置操作；</li>
+<li>PX 10000 表示设置 lock_key 的过期时间为 10s，这是为了避免客户端发生异常而无法释放锁。</li>
+</ul>
+<p>而解锁的过程就是将 lock_key 键删除，但不能乱删，要保证执行操作的客户端就是加锁的客户端。所以解锁的时候，我们要先判断锁的 unique_value 是否为加锁客户端，是的话，才将 lock_key 键删除。</p>
+<p>可以看到，解锁是有两个操作，这时就需要 <strong>Lua 脚本</strong>来保证解锁的原子性(参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/niceyoo/p/13711149.html">Lua脚本实现分布式锁</a>)，因为 Redis 在执行 Lua 脚本时，可以以原子性的方式执行，保证了锁释放操作的原子性：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 释放锁时，先比较 unique_value 是否相等，避免锁的误释放</span><br><span class="line"><span class="keyword">if</span> redis.call(<span class="string">&quot;get&quot;</span>,KEYS[<span class="number">1</span>]) == ARGV[<span class="number">1</span>] <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">return</span> redis.call(<span class="string">&quot;del&quot;</span>,KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">//lua脚本示例</span><br></pre></td></tr></table></figure>
+
+<p>这样一来，就通过使用 SET 命令和 Lua 脚本在 Redis 单节点上完成了分布式锁的加锁和解锁</p>
+<p>(4) <strong>共享 Session 信息</strong>: 通常我们在开发后台管理系统时，会使用 Session 来保存用户的会话(登录)状态，这些 Session 信息会被保存在服务器端，但这只适用于单系统应用，如果是分布式系统此模式将不再适用。例如用户一的 Session 信息被存储在服务器一，但第二次访问时用户一被分配到服务器二，这个时候服务器并没有用户一的 Session 信息，就会出现需要重复登录的问题，问题在于分布式系统每次会把请求随机分配到不同的服务器，因此，我们需要<strong>借助 Redis 对这些 Session 信息进行统一的存储和管理，这样无论请求发送到那台服务器，服务器都会去同一个 Redis 获取相关的 Session 信息</strong>，这样就解决了分布式系统下 Session 存储的问题</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/session%E5%85%B1%E4%BA%AB.png"></p>
+<h3 id="List"><a href="#List" class="headerlink" title="List"></a>List</h3><p>List 列表是简单的字符串列表，<strong>按照插入顺序排序</strong>，可以从头部或尾部向 List 列表添加元素,List 类型的底层数据结构是由<strong>双向链表或压缩列表</strong>实现的,但是<strong>在 Redis 3.2 版本之后，List 数据类型底层数据结构就只由 quicklist 实现了，替代了双向链表和压缩列表</strong>,常用命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将一个或多个值value插入到key列表的表头(最左边)，最后的值在最前面</span></span><br><span class="line">LPUSH key value [value ...] </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将一个或多个值value插入到key列表的表尾(最右边)</span></span><br><span class="line">RPUSH key value [value ...]</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">返回列表key中指定区间内的元素，区间以偏移量start和stop指定，从0开始</span></span><br><span class="line">LRANGE key start stop</span><br></pre></td></tr></table></figure>
+
+<p>应用场景</p>
+<p>（1）消息队列：消息队列在存取消息时，必须要满足三个需求，分别是<strong>消息保序、处理重复的消息和保证消息可靠性</strong>。Redis 的 List 和 Stream 两种数据类型，就可以满足消息队列的这三个需求。List 可以使用 LPUSH + RPOP （或者反过来，RPUSH+LPOP）命令实现消息队列：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/list%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.jpg"></p>
+<p>不过，在消费者读取数据时，有一个潜在的性能风险点：<br><strong>在生产者往 List 中写入数据时，List 并不会主动地通知消费者有新消息写入，如果消费者想要及时处理消息，就需要在程序中不停地调用 <code>RPOP</code> 命令</strong>（比如使用一个while(1)循环）。如果有新消息写入，RPOP命令就会返回结果，否则，RPOP命令返回空值，再继续循环。所以，即使没有新消息写入List，消费者也要不停地调用 RPOP 命令，这就会导致消费者程序的 CPU 一直消耗在执行 RPOP 命令上，带来不必要的性能损失，为了解决这个问题，Redis提供了 BRPOP 命令。<strong>BRPOP命令也称为阻塞式读取，客户端在没有读到队列数据时，自动阻塞，直到有新的数据写入队列，再开始读取新数据</strong>。和消费者程序自己不停地调用RPOP命令相比，这种方式能节省CPU开销</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/BRpop%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.jpg"></p>
+<p>同时消费者要实现重复消息的判断，这需要2个方面的要求：</p>
+<ul>
+<li>每个消息都有一个全局的 ID</li>
+<li>消费者要记录已经处理过的消息的 ID。当收到一条消息后，消费者程序就可以对比收到的消息 ID 和记录的已处理过的消息 ID，来判断当前收到的消息有没有经过处理。如果已经处理过，那么，消费者程序就不再进行处理了</li>
+</ul>
+<p>但是 <strong>List 并不会为每个消息生成 ID 号，所以我们需要自行为每个消息生成一个全局唯一ID</strong>，生成之后，我们在用 LPUSH 命令把消息插入 List 时，需要在消息中包含这个全局唯一 ID。例如，执行以下命令，就把一条全局 ID 为 111000102、库存量为 99 的消息插入了消息队列：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">LPUSH mq <span class="string">&quot;111000102:stock:99&quot;</span></span></span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure>
+
+<p>基于 List 类型的消息队列，满足消息队列的三大需求（消息保序、处理重复的消息和保证消息可靠性）</p>
+<ul>
+<li>消息保序：使用 LPUSH + RPOP；</li>
+<li>阻塞读取：使用 BRPOP；</li>
+<li>重复消息处理：生产者自行实现全局唯一 ID；</li>
+<li>消息的可靠性：使用 BRPOP、LPUSH</li>
+</ul>
+<blockquote>
+<p>List 作为消息队列有什么缺陷？</p>
+</blockquote>
+<p><strong>List 不支持多个消费者消费同一条消息</strong>，因为一旦消费者拉取一条消息后，这条消息就从 List 中删除了，无法被其它消费者再次消费。要实现一条消息可以被多个消费者消费，那么就要将多个消费者组成一个消费组，使得多个消费者可以消费同一条消息(让一条消息转发至对应的组内，组内所有成员都可以收到消息)，但是 <strong>List 类型并不支持消费组的实现</strong>。</p>
+<h3 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h3><p>Hash 是一个键值对（key - value）集合，其中 value 的形式如： <code>value=[&#123;field1，value1&#125;，...&#123;fieldN，valueN&#125;]</code>。Hash 特别适合用于存储对象,Hash 与 String 对象的区别如下图所示:<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/hash-string-difference.jpg"></p>
+<p>常用命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">SET user &#x27;&#123;&quot;name&quot;:&quot;harrykane&quot;, &quot;age&quot;:29&#125;&#x27;   #String类型 Json存储User对象</span><br><span class="line">HMSET user harrykane name age 30            #Hash存储Player对象,key为实体类名，field-value为键值对</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">## 可以使用如下命令，将用户对象的信息存储到 Hash 类型</span></span></span><br><span class="line">HMSET uid:1 name Tom age 15</span><br><span class="line">HMSET uid:2 name Jerry age 13</span><br><span class="line">HMSET uid:3 name David age 20</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">获取uid为1对象操作如下：</span></span><br><span class="line">HGETALL  uid:1</span><br><span class="line">1) &quot;name&quot;</span><br><span class="line">2) &quot;Tom&quot;</span><br><span class="line">3) &quot;age&quot;</span><br><span class="line">4) &quot;15&quot;</span><br></pre></td></tr></table></figure>
+
+<p>上面介绍到String + Json也是存储对象的一种方式，那么存储对象时，那么到底用 String + json 还是用 Hash 呢？实际上一般对象用String + Json 存储，对象中某些频繁变化的属性可以考虑抽出来用 Hash 类型存储。</p>
+<h3 id="Set-amp-Zset"><a href="#Set-amp-Zset" class="headerlink" title="Set&amp;Zset"></a>Set&amp;Zset</h3><p>Set 类型是一个无序并唯一的键值集合，它的存储顺序不会按照插入的先后顺序进行存储,Set 类型和 List 类型的区别如下：</p>
+<ul>
+<li>List 可以存储重复元素，Set 只能存储非重复元素；</li>
+<li>List 是按照元素的先后顺序存储元素的，而 Set 则是无序方式存储元素的</li>
+</ul>
+<p> Set 类型比较适合用来数据去重和保障数据的唯一性,例如点赞,Set 类型可以保证一个用户只能点一个赞；Set 类型同时支持交集运算，所以可以用来计算共同关注的好友、公众号等</p>
+<p>Zset 类型（也称SortedSet）相比于 Set 类型多了一个排序属性 score（分值），对于有序集合 Zset 来说，每个存储元素相当于有两个值组成的，一个是有序集合的元素值，一个是排序值。有序集合保留了集合不能有重复成员的特性（分值可以重复），但不同的是<strong>有序集合中的元素可以排序</strong>:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/zset.jpg" alt="Zset"></p>
+<p>Zset 类型（Sorted Set，有序集合） 可以根据元素的权重来排序，可以自己来决定每个元素的权重值。比如说，我们可以根据元素插入 Sorted Set 的时间确定权重值，先插入的元素权重小，后插入的元素权重大,在面对需要展示最新列表、排行榜等场景时，如果数据更新频繁或者需要分页显示，可以优先考虑使用 Sorted Set,有序集合比较典型的使用场景就是排行榜。例如学生成绩的排名榜、游戏积分排行榜、视频播放排名、电商系统中商品的销量排名等。</p>
+<p>以博文点赞排名为例，小林发表了五篇博文，分别获得赞为 200、40、100、50、150</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">往有序集合key中加入带分值元素</span></span><br><span class="line">ZADD key score member [[score member]...] </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">arcticle:1 文章获得了200个赞</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">ZADD user:xiaolin:ranking 200 arcticle:1</span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">arcticle:2 文章获得了40个赞</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">ZADD user:xiaolin:ranking 40 arcticle:2</span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">arcticle:3 文章获得了100个赞</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">ZADD user:xiaolin:ranking 100 arcticle:3</span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">arcticle:4 文章获得了50个赞</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">ZADD user:xiaolin:ranking 50 arcticle:4</span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">arcticle:5 文章获得了150个赞</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">ZADD user:xiaolin:ranking 150 arcticle:5</span></span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure>
+
+<p>获取小林文章赞数最多的 3 篇文章，可以使用 ZREVRANGE 命令（倒序获取有序集合 key 从start下标到stop下标的元素）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">WITHSCORES 表示把 score 也显示出来</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">ZREVRANGE user:xiaolin:ranking 0 2 WITHSCORES</span></span><br><span class="line">1) &quot;arcticle:1&quot;</span><br><span class="line">2) &quot;200&quot;</span><br><span class="line">3) &quot;arcticle:5&quot;</span><br><span class="line">4) &quot;150&quot;</span><br><span class="line">5) &quot;arcticle:3&quot;</span><br><span class="line">6) &quot;100&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h3><p>Redis Stream 是 Redis 5.0 版本新增加的数据类型，Redis 专门为消息队列设计的数据类型。</p>
+<p>在 Redis 5.0 Stream 没出来之前，消息队列的实现方式都有着各自的缺陷，例如：</p>
+<ul>
+<li>发布订阅模式，不能持久化也就无法可靠的保存消息，并且对于离线重连的客户端不能读取历史消息的缺陷；</li>
+<li>List 实现消息队列的方式不能重复消费，一个消息消费完就会被删除，而且生产者需要自行实现全局唯一 ID。</li>
+</ul>
+<p>基于以上问题，Redis 5.0 便推出了 Stream 类型也是此版本最重要的功能，用于完美地实现消息队列，它支持消息的持久化、支持自动生成全局唯一 ID、支持 ack 确认消息的模式、支持消费组模式等，让消息队列更加的稳定和可靠</p>
+<h4 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h4><p>Stream 可以以使用 <strong>XGROUP 创建消费组</strong>，创建消费组之后，Stream 可以使用 XREADGROUP 命令让消费组内的消费者读取消息,创建两个消费组，这两个消费组消费的消息队列是 mymq，都指定从第一条消息开始读取：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建一个名为 group1 的消费组，0-0 表示从第一条消息开始读取。</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">XGROUP CREATE mymq group1 0-0</span></span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建一个名为 group2 的消费组，0-0 表示从第一条消息开始读取。</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">XGROUP CREATE mymq group2 0-0</span></span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<p>消息队列中的<strong>某一条消息</strong>一旦被消费组里的一个消费者读取了，就不能再被该消费组内的其他消费者读取了，即同一个消费组里的消费者不能消费同一条消息，但是，<strong>不同消费组的消费者可以消费同一条消息（但是有前提条件，创建消息组的时候，不同消费组指定了相同位置开始读取消息</strong>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; xadd  mymq *  name xiaolin</span><br><span class="line">&quot;1679378689141-0&quot;</span><br><span class="line">127.0.0.1:6379&gt; XGROUP CREATE mymq group1 0-0</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt;  XGROUP CREATE mymq group2 0-0</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP group1 consumer1 STREAMS mymq &gt;</span><br><span class="line">1) 1) &quot;mymq&quot;</span><br><span class="line">   2) 1) 1) &quot;1679378689141-0&quot;</span><br><span class="line">         2) 1) &quot;name&quot;</span><br><span class="line">            2) &quot;xiaolin&quot;</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP group1 consumer1 STREAMS mymq &gt;</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP group1 consumer2 STREAMS mymq &gt;</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP group2 consumer1 STREAMS mymq &gt;</span><br><span class="line">1) 1) &quot;mymq&quot;</span><br><span class="line">   2) 1) 1) &quot;1679378689141-0&quot;</span><br><span class="line">         2) 1) &quot;name&quot;</span><br><span class="line">            2) &quot;xiaolin&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用消费组的目的是让组内的多个消费者共同分担读取消息，所以，我们通常会让每个消费者读取部分消息，从而实现消息读取负载在多个消费者间是均衡分布的，如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#再次添加四条消息，这样mymq中一共有5条消息</span></span></span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; XADD mymq *  player kane</span><br><span class="line">&quot;1679378913264-0&quot;</span><br><span class="line">127.0.0.1:6379&gt; XADD mymq *  age 30</span><br><span class="line">&quot;1679378922998-0&quot;</span><br><span class="line">127.0.0.1:6379&gt; XADD mymq *  club  spurs</span><br><span class="line">&quot;1679378928773-0&quot;</span><br><span class="line">127.0.0.1:6379&gt; XADD mymq *  number   9</span><br><span class="line">&quot;1679378936160-0&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#设置三个消费者组，观察其读取消息的情况：</span></span></span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt;  XREADGROUP GROUP group2 consumer1 COUNT 1 STREAMS mymq &gt;</span><br><span class="line">1) 1) &quot;mymq&quot;</span><br><span class="line">   2) 1) 1) &quot;1679378913264-0&quot;</span><br><span class="line">         2) 1) &quot;player&quot;</span><br><span class="line">            2) &quot;kane&quot;</span><br><span class="line">127.0.0.1:6379&gt;  XREADGROUP GROUP group1 consumer1 COUNT 1 STREAMS mymq &gt;</span><br><span class="line">1) 1) &quot;mymq&quot;</span><br><span class="line">   2) 1) 1) &quot;1679378913264-0&quot;</span><br><span class="line">         2) 1) &quot;player&quot;</span><br><span class="line">            2) &quot;kane&quot;</span><br><span class="line">127.0.0.1:6379&gt;  XREADGROUP GROUP group3 consumer1 COUNT 1 STREAMS mymq &gt;</span><br><span class="line">1) 1) &quot;mymq&quot;</span><br><span class="line">   2) 1) 1) &quot;1679378689141-0&quot;</span><br><span class="line">         2) 1) &quot;name&quot;</span><br><span class="line">            2) &quot;xiaolin&quot;</span><br><span class="line">127.0.0.1:6379&gt;  XREADGROUP GROUP group3 consumer2 COUNT 1 STREAMS mymq &gt;</span><br><span class="line">1) 1) &quot;mymq&quot;</span><br><span class="line">   2) 1) 1) &quot;1679378913264-0&quot;</span><br><span class="line">         2) 1) &quot;player&quot;</span><br><span class="line">            2) &quot;kane&quot;</span><br><span class="line">127.0.0.1:6379&gt;  XREADGROUP GROUP group3 consumer3 COUNT 1 STREAMS mymq &gt;</span><br><span class="line">1) 1) &quot;mymq&quot;</span><br><span class="line">   2) 1) 1) &quot;1679378922998-0&quot;</span><br><span class="line">         2) 1) &quot;age&quot;</span><br><span class="line">            2) &quot;30&quot;</span><br><span class="line">127.0.0.1:6379&gt;  XREADGROUP GROUP group3 consumer4 COUNT 1 STREAMS mymq &gt;</span><br><span class="line">1) 1) &quot;mymq&quot;</span><br><span class="line">   2) 1) 1) &quot;1679378928773-0&quot;</span><br><span class="line">         2) 1) &quot;club&quot;</span><br><span class="line">            2) &quot;spurs&quot;</span><br><span class="line">127.0.0.1:6379&gt;  XREADGROUP GROUP group3 consumer5 COUNT 1 STREAMS mymq &gt;</span><br><span class="line">1) 1) &quot;mymq&quot;</span><br><span class="line">   2) 1) 1) &quot;1679378936160-0&quot;</span><br><span class="line">         2) 1) &quot;number&quot;</span><br><span class="line">            2) &quot;9&quot;</span><br><span class="line">127.0.0.1:6379&gt;  XREADGROUP GROUP group3 consumer6 COUNT 1 STREAMS mymq &gt;</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>再次验证了同一条消息只能被一个消费者组里的一个消费者consumer所读取，但是可以被不同消费者组的多个消费者所读取，并且，一个队列中的所有消息会被一个消费者组里的所有消费者均匀分配（组内的多个消费者共同分担读取消息，所以，我们通常会让每个消费者读取部分消息，从而实现消息读取负载在多个消费者间是均衡分布的）</p>
+<blockquote>
+<p>基于 Stream 实现的消息队列，如何保证消费者在发生故障或宕机再次重启后，仍然可以读取未处理完的消息？</p>
+</blockquote>
+<p>Streams 会自动使用内部队列（也称为 PENDING List）留存消费组里每个消费者读取的消息，直到消费者使用 <code>XACK</code> 命令通知 Stream“消息已经处理完成”。<strong>消费确认</strong>增加了消息的可靠性，一般在业务处理完成之后，需要执行 <code>XACK </code>确认消息已经被消费完成</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4.jpg" alt="Stream-Ack"></p>
+<p>如果消费者没有成功处理消息，它就不会给 Streams 发送 XACK 命令，消息仍然会留存。此时，<strong>消费者可以在重启后，用 XPENDING 命令查看已读取、但尚未确认处理完成的消息</strong>，查看 group2 中各个消费者已读取、但尚未确认的消息个数命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; XPENDING mymq group2</span><br><span class="line">1) (integer) 3</span><br><span class="line">2) &quot;1654254953808-0&quot;  # 表示 group2 中所有消费者读取的消息最小 ID</span><br><span class="line">3) &quot;1654256271337-0&quot;  # 表示 group2 中所有消费者读取的消息最大 ID</span><br><span class="line">4) 1) 1) &quot;consumer1&quot;</span><br><span class="line">      2) &quot;1&quot;</span><br><span class="line">   2) 1) &quot;consumer2&quot;</span><br><span class="line">      2) &quot;1&quot;</span><br><span class="line">   3) 1) &quot;consumer3&quot;</span><br><span class="line">      2) &quot;1&quot;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Redis 基于 Stream 消息队列与专业的消息队列有哪些差距？</p>
+</blockquote>
+<ol>
+<li>Redis Stream 消息会丢失吗</li>
+</ol>
+<ul>
+<li><p>Redis 生产者会不会丢消息？生产者会不会丢消息，取决于生产者对于异常情况的处理是否合理。 <strong>从消息被生产出来，然后提交给 MQ 的过程中，只要能正常收到 （ MQ 中间件） 的 ACK 确认响应，就表示发送成功</strong>，所以只要处理好返回值和异常，如果返回异常则进行消息重发，那么这个阶段是不会出现消息丢失的。</p>
+</li>
+<li><p>Redis 消费者会不会丢消息？不会，因为 Stream （ MQ 中间件）会自动使用内部队列（也称为 PENDING List）留存消费组里每个消费者读取的消息，但是未被确认的消息。消费者可以在重启后，用 XPENDING 命令查看已读取、但尚未确认处理完成的消息。等到消费者执行完业务逻辑后，再发送消费确认 XACK 命令，也能保证消息的不丢失。</p>
+</li>
+<li><p>Redis 消息中间件会不会丢消息？会，Redis 在以下 2 个场景下，都会导致数据丢失：</p>
+<ul>
+<li><p>AOF 持久化配置为每秒写盘，但这个写盘过程是异步的，Redis 宕机时会存在数据丢失的可能</p>
+</li>
+<li><p>主从复制也是异步的，<a target="_blank" rel="noopener" href="https://xiaolincoding.com/redis/cluster/master_slave_replication.html#redis-%E4%B8%BB%E4%BB%8E%E5%88%87%E6%8D%A2%E5%A6%82%E4%BD%95%E5%87%8F%E5%B0%91%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">主从切换时，也存在丢失数据的可能 </a>，</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Redis 在队列中间件环节无法保证消息不丢。像 RabbitMQ 或 Kafka 这类专业的队列中间件，在使用时是部署一个集群，生产者在发布消息时，队列中间件通常会写「多个节点」，也就是有多个副本，这样一来，即便其中一个节点挂了，也能保证集群的数据不丢失</p>
+<p><em>2、Redis Stream 消息可堆积吗？</em></p>
+<p>Redis 的数据都存储在内存中，这就意味着一旦发生消息积压，则会导致 Redis 的内存持续增长，如果超过机器内存上限，就会面临被 OOM 的风险。所以 Redis 的 Stream 提供了可以指定队列最大长度的功能。当指定队列最大长度时，队列长度超过上限后，旧消息会被删除，只保留固定长度的新消息。这么来看，Stream 在消息积压时，如果指定了最大长度，还是有可能丢失消息的。但 Kafka、RabbitMQ 专业的消息队列它们的数据都是存储在磁盘上，当消息积压时，无非就是多占用一些磁盘空间</p>
+<h2 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h2><h3 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h3><h4 id="AOF重写"><a href="#AOF重写" class="headerlink" title="AOF重写"></a>AOF重写</h4><p>AOF 日志是一个文件，随着执行的写操作命令越来越多，文件的大小会越来越大。所以Redis 为了避免 AOF 文件越写越大，提供了 <strong>AOF 重写机制</strong>，当 AOF 文件的大小超过所设定的阈值后，Redis 就会启用 AOF 重写机制，来压缩 AOF 文件。AOF 重写机制是在重写时，读取当前数据库中的所有键值对，然后将每一个键值对用一条命令记录到「新的 AOF 文件」，等到全部记录完后，就将新的 AOF 文件替换掉现有的 AOF 文件：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/aof%E9%87%8D%E5%86%99.jpg"></p>
+<p>在使用重写机制后，就会读取 name 最新的 value（键值对） ，然后用一条 「set name xiaolincoding」命令记录到新的 AOF 文件，之前的第一个命令就没有必要记录了，因为它属于「历史」命令，没有作用了。这样一来，一个键值对在重写日志中只用一条命令就行了。重写机制的妙处在于，尽管某个键值对被多条写命令反复修改，<strong>最终也只需要根据这个「键值对」当前的最新状态，然后用一条命令去记录键值对</strong>，代替之前记录这个键值对的多条命令，这样就减少了 AOF 文件中的命令数量</p>
+<h3 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h3><p>RDB 快照就是记录某一个瞬间的内存数据，记录的是实际数据，而 AOF 文件记录的是命令操作的日志，而不是实际的数据，因此在 Redis 恢复数据时， RDB 恢复数据的效率会比 AOF 高些，因为直接将 RDB 文件读入内存就可以，不需要像 AOF 那样还需要额外执行操作命令的步骤才能恢复数据，Redis 提供了两个命令来生成 RDB 文件，分别是 <code>save</code> 和 <code>bgsave</code>，他们的区别就在于是否在「主线程」里执行：</p>
+<ul>
+<li>执行了 save 命令，就会在主线程生成 RDB 文件，由于和执行操作命令在同一个线程，所以如果写入 RDB 文件的时间太长，<strong>会阻塞主线程</strong>；</li>
+<li>执行了 bgsave 命令，会<strong>创建一个子进程</strong>来生成 RDB 文件，这样可以<strong>避免主线程的阻塞</strong>；</li>
+</ul>
+<p>在子进程执行 bgsave 过程中，Redis主线程依然<strong>可以继续处理操作命令</strong>的，也就是说数据是能被修改的，这依赖于<strong>写入时复制</strong>（Copy On Write）:</p>
+<p>执行 bgsave 命令的时候，会通过 <code>fork()</code> 创建子进程，此时子进程和父进程是共享同一片内存数据的，由于共享父进程的所有内存数据，于是就可以直接读取主线程（父进程）里的内存数据，并将数据写入到 RDB 文件</p>
+<ol>
+<li>当主线程（父进程）对这些共享的内存数据也都是只读操作，那么，主线程（父进程）和 bgsave 子进程相互不影响</li>
+<li>但是，如果主线程（父进程）要<strong>修改共享数据里的某一块数据</strong>（比如键值对 <code>A</code>）时，就会发生写入时复制，于是这块数据的<strong>物理内存就会被复制一份（键值对 <code>A&#39;</code>）</strong>，然后<strong>主线程在这个数据副本（键值对 <code>A&#39;</code>）进行修改操作</strong>。与此同时，<strong>bgsave 子进程可以继续把原来的数据（键值对 <code>A</code>）写入到 RDB 文件</strong>，<strong>这种情况下RDB 快照保存的是原本的内存数据</strong>，而主线程刚修改的数据，是没办法在这一时间写入 RDB 文件的，只能交由下一次的 bgsave 快照</li>
+</ol>
+<h3 id="混合持久化"><a href="#混合持久化" class="headerlink" title="混合持久化"></a>混合持久化</h3><p>将 RDB 和 AOF 合体使用，这个方法是在 Redis 4.0 提出的，该方法叫<strong>混合使用 AOF 日志和内存快照</strong>，也叫混合持久化。如果想要开启混合持久化功能，可以在 Redis 配置文件将下面这个配置项设置成 yes：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aof-use-rdb-preamble yes</span><br></pre></td></tr></table></figure>
+
+<p>使用了混合持久化后，AOF 文件的<strong>前半部分是 RDB 格式的全量数据，后半部分是 AOF 格式的增量数据</strong>，这样的好处在于重启 Redis 加载数据的时候，由于前半部分是 RDB 内容，这样<strong>加载的时候速度会很快</strong>。加载完 RDB 的内容后，才会加载后半部分的 AOF 内容，这里的内容是 Redis 后台子进程重写 AOF 期间，主线程处理的操作命令，可以使得<strong>数据更少的丢失</strong></p>
+<h2 id="高可用"><a href="#高可用" class="headerlink" title="高可用"></a>高可用</h2><blockquote>
+<p>补充： Redis删除策略、内存淘汰策略</p>
+</blockquote>
+<p>定时删除策略的做法是，<strong>在设置 key 的过期时间时，同时创建一个定时事件，当时间到达时，由事件处理器自动执行 key 的删除操作</strong></p>
+<p>惰性删除策略的做法是，<strong>不主动删除过期键，每次从数据库访问 key 时，都检测 key 是否过期，如果过期则删除该 key</strong></p>
+<p>定期删除策略的做法是，<strong>每隔一段时间「随机」从数据库中取出一定数量的 key 进行检查，并删除其中的过期key</strong></p>
+<p>Redis 使用的过期删除策略是「惰性删除+定期删除」，删除的对象是已过期的 key。</p>
+<p>内存淘汰策略是解决内存过大的问题，当 Redis 的运行内存超过最大运行内存时，就会触发内存淘汰策略（前面说的过期删除策略，是删除已过期的 key，而当 Redis 的运行内存已经超过 Redis 设置的最大内存之后，则会使用内存淘汰策略删除符合条件的 key，以此来保障 Redis 高效的运行）</p>
+<h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><p>主从复制模式下：主服务器可以进行读写操作，当发生写操作时自动将写操作同步给从服务器，而从服务器一般是只读，并接受主服务器同步过来写操作命令，然后执行这条命令</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6.jpg"></p>
+<p>可以使用 <code>replicaof</code>（Redis 5.0 之前使用 slaveof）命令形成主服务器和从服务器的关系</p>
+<p>主从服务器间的第一次同步的过程可分为三个阶段：</p>
+<ul>
+<li>第一阶段是建立连接、协商同步；</li>
+<li>第二阶段是主服务器同步数据给从服务器（主服务器会执行 bgsave 命令来生成 RDB 文件，然后把文件发送给从服务器）；</li>
+<li>第三阶段是主服务器发送新写操作命令给从服务器（会有数据一致性问题）</li>
+</ul>
+<p>主从服务器在完成第一次同步后，双方之间就会维护一个 TCP 连接，后续主服务器可以通过这个连接继续将写操作命令传播给从服务器，然后从服务器执行该命令，使得与主服务器的数据库状态相同。而且这个连接是长连接的，目的是避免频繁的 TCP 连接和断开带来的性能开销。上面的这个过程被称为<strong>基于长连接的命令传播</strong>，通过这种方式来保证第一次同步后的主从服务器的数据一致性</p>
+<p>总结</p>
+<p>主从复制共有三种模式：<strong>全量复制、基于长连接的命令传播、增量复制</strong></p>
+<p>主从服务器第一次同步的时候，就是采用全量复制，此时主服务器会两个耗时的地方，分别是生成 RDB 文件和传输 RDB 文件。为了避免过多的从服务器和主服务器进行全量复制，可以把一部分从服务器升级为「经理角色」，让它也有自己的从服务器，通过这样可以分摊主服务器的压力</p>
+<p>第一次同步完成后，主从服务器都会维护着一个长连接，主服务器在接收到写操作命令后，就会通过这个连接将写命令传播给从服务器，来保证主从服务器的数据一致性</p>
+<p>如果遇到网络断开又恢复后，主服务器会采用<strong>增量复制</strong>的方式继续同步，也就是说只会把网络断开期间主服务器接收到的写操作命令，同步给从服务器</p>
+<h3 id="哨兵"><a href="#哨兵" class="headerlink" title="哨兵"></a>哨兵</h3><p><strong>哨兵（Sentinel）机制</strong>，它的作用是实现<strong>主从节点故障转移</strong>。它会监测主节点是否存活，如果发现主节点挂了，它就会选举一个从节点切换为主节点，并且把新主节点的相关信息通知给从节点和客户端，哨兵其实是一个运行在特殊模式下的 Redis 进程，所以它也是一个节点。从“哨兵”这个名字也可以看得出来，它相当于是“观察者节点”，观察的对象是主从节点</p>
+<p>如何判断主节点真的故障了？</p>
+<p>哨兵会每隔 1 秒给<strong>所有主从节点</strong>发送 PING 命令，当主从节点收到 PING 命令后，会发送一个响应命令给哨兵，这样就可以判断它们是否在正常运行，哨兵在部署的时候不会只部署一个节点，而是用多个节点部署成<strong>哨兵集群</strong>，当一个哨兵判断主节点为「主观下线」后，就会向其他哨兵发起命令，其他哨兵收到这个命令后，就会根据自身和主节点的网络状况，做出赞成投票或者拒绝投票的响应，当这个哨兵的赞同票数达到哨兵配置文件中的 <code>quorum </code>配置项设定的值后，这时主节点就会被该哨兵标记为「客观下线」，并准备执行主从节点切换</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/sentinel.jpg"></p>
+<p>执行切换之前还需要在哨兵集群中选出一个 leader（标记客观下线的哨兵向其他哨兵发起投票，询问是否可以当选leader），让 leader 来进行切换操作</p>
+<p>主从故障转移操作包含以下四个步骤：</p>
+<ul>
+<li>第一步：在已下线主节点（旧主节点）属下的所有「从节点」里面，挑选出一个从节点，并将其转换为主节点。</li>
+<li>第二步：让已下线主节点属下的所有「从节点」修改复制目标，修改为复制「新主节点」；</li>
+<li>第三步：将新主节点的 IP 地址和信息，通过「发布者&#x2F;订阅者机制」通知给客户端(每个哨兵节点提供发布者&#x2F;订阅者机制，客户端可以从哨兵订阅消息)；</li>
+<li>第四步：继续监视旧主节点，当这个旧主节点重新上线时，将它设置为新主节点的从节点</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/%E4%B8%BB%E4%BB%8E%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB.jpg"></p>
+<h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><p>Redis 的哨兵模式基本已经可以实现高可用，读写分离 ，但是在这种模式下每台 Redis 服务器都存储相同的数据，很浪费内存，所以在 redis3.0 上加入了 Cluster 集群模式（Redis集群是去中心化的集群架构），同时实现了 Redis 的分布式存储（对数据进行<strong>分片</strong>，也就是说<strong>每台 Redis 节点上存储不同的内容</strong>）：<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/%E9%9B%86%E7%BE%A4.jpg"></p>
+<p>这里的 6 台 redis节点两两之间并不是独立的，每个节点都会通过集群总线(cluster bus)与其他的节点进行通信（Gossip协议），Redis 集群有16384 个哈希槽，每个 key 通过 CRC16 校验后对 16384 取模来决定放置哪个槽，集群的每个节点负责一部分hash槽，举个例子，比如当前集群有3个节点，那么：</p>
+<ul>
+<li>节点 A 包含 0 到 5460 号哈希槽</li>
+<li>节点 B 包含 5461 到 10922 号哈希槽</li>
+<li>节点 C 包含 10923 到 16383 号哈希槽</li>
+</ul>
+<p>使用哈希槽的好处就在于可以方便的添加或者移除节点，并且无论是添加删除或者修改某一个节点，都不会造成集群不可用的状态。当需要增加节点时，只需要把其他节点的某些哈希槽挪到新节点就可以了；当需要移除节点时，只需要把移除节点上的哈希槽挪到其他节点就行了</p>
+<blockquote>
+<p>gossip协议，是基于流行病传播方式的节点或者进程之间信息交换的协议。原理就是在不同的节点间不断地通信交换信息，一段时间后，所有的节点就都有了整个集群的完整信息，并且所有节点的状态都会达成一致。每个节点可能知道所有其他节点，也可能仅知道几个邻居节点，但只要这些节可以通过网络连通，最终他们的状态就会是一致的。Gossip协议最大的好处在于，即使集群节点的数量增加，每个节点的负载也不会增加很多，几乎是恒定的。</p>
+</blockquote>
+<p>Redis集群采用无中心结构,它的特点如下：</p>
+<ol>
+<li>所有的redis节点彼此互联(PING-PONG机制),内部使用二进制协议优化传输速度和带宽</li>
+<li><strong>节点的fail是通过集群中超过半数的节点检测失效时才生效</strong></li>
+<li>客户端与redis节点直连,不需要中间代理层.客户端不需要连接集群所有节点,连接集群中任何一个可用节点即可</li>
+</ol>
+<h4 id="故障转移"><a href="#故障转移" class="headerlink" title="故障转移"></a>故障转移</h4><p>Redis集群通过ping&#x2F;pong消息，实现故障发现。这个环境包括<strong>主观下线和客观下线</strong>：</p>
+<p><strong>主观下线：</strong> 某个节点认为另一个节点不可用，即下线状态，这个状态并不是终的故障判定，只能代表一个节点的意见，<strong>可能存在误判情况</strong></p>
+<p><strong>客观下线：</strong> 指标记一个节点真正的下线，集群内多个节点都认为该节点不可用，从而达成共识的结果。如果是持有槽的主节点故障，需要为该节点进行故障转移（master-slave切换）</p>
+<p>故障发现后，如果下线节点的是主节点，则需要在它的从节点中选一个替换它，以保证集群的高可用</p>
+<h2 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h2><h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>缓存穿透是指用户不断请求<strong>缓存和数据库中都没有的信息（查询一个根本不存在的数据！）</strong>，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击应用，如发起请求为id为“-1”的数据或id为特别大不存在的数据。就会导致数据库压力过大</p>
+<p>解决方案：</p>
+<ol>
+<li><p>接口层增加校验，如用户鉴权校验，id做基础校验，id&lt;&#x3D;0的直接拦截；</p>
+</li>
+<li><p>从缓存查不到，在数据库中也查不到的数据，这时也可以将key-value写为key-null（比如一个请求查询id&#x3D;-1，查不到数据库后照样将该值缓存到redis中：<strong>redis中缓存一个key为-1，value为null的键值对</strong>），同时必须设置缓存时间（防止万一以后真的添加了对应id的数据行，如果不设置过期时间直接走缓存就会返回一个null值），缓存有效时间可以设置短点，如30秒（设置太长会导致正常情况也没法使用）。这样可以防止攻击用户反复用同一个id暴力攻击；</p>
+</li>
+<li><p>[布隆过滤器][<a target="_blank" rel="noopener" href="https://javaguide.cn/cs-basics/data-structure/bloom-filter.html]%EF%BC%9Abloomfilter%E5%B0%B1%E7%B1%BB%E4%BC%BC%E4%BA%8E%E4%B8%80%E4%B8%AAhashset%EF%BC%8C%E7%94%A8%E4%BA%8E%E5%BF%AB%E9%80%9F%E5%88%A4%E6%9F%90%E4%B8%AA%E5%85%83%E7%B4%A0%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E4%BA%8E%E9%9B%86%E5%90%88%E4%B8%AD%EF%BC%8C%E5%85%B6%E5%85%B8%E5%9E%8B%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E5%B0%B1%E6%98%AF%E5%BF%AB%E9%80%9F%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AAkey%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E4%BA%8E%E6%9F%90%E5%AE%B9%E5%99%A8%EF%BC%8C%E4%B8%8D%E5%AD%98%E5%9C%A8%E5%B0%B1%E7%9B%B4%E6%8E%A5%E8%BF%94%E5%9B%9E%E3%80%82%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E5%85%B3%E9%94%AE%E5%B0%B1%E5%9C%A8%E4%BA%8Ehash%E7%AE%97%E6%B3%95%E5%92%8C%E5%AE%B9%E5%99%A8%E5%A4%A7%E5%B0%8F">https://javaguide.cn/cs-basics/data-structure/bloom-filter.html]：bloomfilter就类似于一个hashset，用于快速判某个元素是否存在于集合中，其典型的应用场景就是快速判断一个key是否存在于某容器，不存在就直接返回。布隆过滤器的关键就在于hash算法和容器大小</a></p>
+</li>
+</ol>
+<blockquote>
+<p>比如当某一个字符串存储要加入到布隆过滤器中时，该字符串首先由<strong>多个哈希函数生成不同的哈希值</strong>，然后将对应的位数组的下标设置为 1（当位数组初始化时，所有位置均为 0）。当第二次存储相同字符串时，因为先前的对应位置已设置为 1，所以很容易知道此值已经存在（去重非常方便）；</p>
+<p>如果我们需要判断某个字符串是否在布隆过滤器中时，只需要对给定字符串再次进行相同的哈希计算，得到值之后<strong>判断位数组中的每个元素是否都为 1，如果值都为 1，那么说明这个值在布隆过滤器中，如果存在一个值不为 1，说明该元素不在布隆过滤器中。</strong></p>
+<p>综上可以得出：布隆过滤器说某个元素存在，小概率会误判。布隆过滤器说某个元素不在，那么这个元素一定不存在！</p>
+</blockquote>
+<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p><strong>缓存击穿是指大量并发访问同一个热点数据（缓存雪崩是多个数据）</strong>时，当该热点数据缓存失效后同时请求数据库，瞬间耗尽数据库资源，导致数据库压力过大</p>
+<p>解决方案：</p>
+<ol>
+<li>设置热点数据永远不过期</li>
+<li>仅对查询数据库的业务逻辑代码块来设置同步锁synchronized(this)</li>
+</ol>
+<blockquote>
+<p>比如查询逻辑调用的service为PublishServiceImpl,由于在对应的ServiceImpl上设置了**@Service<strong>注解，故该类的实例会被注入到Spring容器中，而Spring默认Bean为单例的（</strong>Singleton**）,因此如果多个线程请求过来共享这一个实例，即共享这一个锁</p>
+</blockquote>
+<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>缓存雪崩是指缓存中大批数据一起过期，此时如果外来请求过多，使得大量请求直接查询数据库，导致数据库压力过大甚至宕机。和缓存击穿不同的是，缓存击穿指并发查同一条数据，缓存雪崩是大量不同数据一起过期了，</p>
+<p>解决方案：</p>
+<ol>
+<li><p>对缓存数据的过期时间设置随机，防止同一时间大量数据过期现象发生。</p>
+</li>
+<li><p>如果缓存数据库是分布式部署，将热点数据均匀分布在不同的缓存数据库中。</p>
+</li>
+<li><p>使用synchronized同步锁控制查询数据库的线程（并发度很低）</p>
+</li>
+<li><p>不用等到请求到来再去查询数据库时才存入缓存，可以提前将数据存入缓存中，后台通常有<strong>定时任务将数据库中的数据存入缓存</strong></p>
+</li>
+</ol>
+<h3 id="Redisson分布式锁"><a href="#Redisson分布式锁" class="headerlink" title="Redisson分布式锁"></a>Redisson分布式锁</h3><p>（1）基于synchronized的同步锁问题：</p>
+<p><code>synchronized</code>锁的是当前JVM，如果<strong>多个JVM进程</strong>同时访问一个接口，此时再使用同步锁是锁不住的：即一个同步锁程序只能保证同一个虚拟机中多个线程只有一个线程去查数据库，如果高并发情况下通过网关负载均衡转发给多个虚拟机，此时就会存在多个线程去查询数据库的情况，因为<strong>同步锁（虚拟机内部的锁）无法跨虚拟机保证同步执行</strong></p>
+<p>（2）基于setnx实现分布式锁的问题：</p>
+<p><code>SETNX</code> 命令是 Redis 中用于实现分布式锁的经典方案之一。它可以将一个指定的 key 设置为一个特定的值，只有当这个 key 不存在时才能设置成功，但是当多个JVM同时尝试获取同一个锁时，其中一个JVM进程获取成功后需要设置锁的过期时间，过期时间设置过小会导致当前请求还未处理完锁就被释放；时间设置过长又会导致资源浪费；而如果采取处理完请求后手动释放锁的方法，又会产生原子性问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">if(缓存里有)</span><br><span class="line">&#123;</span><br><span class="line">返回缓存里数据</span><br><span class="line">&#125;else&#123;</span><br><span class="line">获取分布式锁： set lock 01 NX</span><br><span class="line">if(获取锁成功)</span><br><span class="line">&#123;</span><br><span class="line">try&#123;</span><br><span class="line">查询数据库</span><br><span class="line">&#125;</span><br><span class="line">finally&#123;</span><br><span class="line"># if(redis.call(&quot;get&quot;,&quot;lock&quot;)==&quot;01&quot;)&#123;</span><br><span class="line"># 释放锁: redis.call(&quot;del&quot;,&quot;lock&quot;)</span><br><span class="line">                &#125;</span><br><span class="line">           &#125;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出redis在执行带<code>#</code>的两行代码时不能保证原子性，故需要通过<code>lua</code>脚本保证原子性：</p>
+<p>解锁脚本的一个例子将类似于以下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> redis.call(<span class="string">&quot;get&quot;</span>,KEYS[<span class="number">1</span>]) == ARGV[<span class="number">1</span>]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="keyword">return</span> redis.call(<span class="string">&quot;del&quot;</span>,KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>Redisson的加锁机制如下图所示，线程去获取锁，获取成功则执行lua脚本，保存数据到redis数据库。如果获取失败: 一直通过while循环尝试获取锁(可自定义等待时间，超时后返回失败)，获取成功后，执行lua脚本，保存数据到redis：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/amonstercat/blog-images/redisson.jpg"></p>
+<p>如果拿到分布式锁的节点宕机，且这个锁正好处于锁住的状态时，会出现锁死的状态，为了避免这种情况的发生，锁都会设置一个过期时间。这样也存在一个问题，加入一个线程拿到了锁设置了30s超时，在30s后这个线程还没有执行完毕，锁超时释放了，就会导致问题，Redisson给出了自己的答案，自动延期(Watch Dog)机制:</p>
+<p>  Redisson提供了一个监控锁的看门狗线程，它的作用是在Redisson实例被关闭前，不断的延长锁的有效期，也就是说，如果一个拿到锁的线程一直没有完成逻辑，那么看门狗会帮助线程不断的延长锁超时时间，锁不会因为超时而被释放。默认情况下，看门狗的续期时间是30s，也可以通过修改Config.lockWatchdogTimeout来另行指定</p>
+<p>项目中使用Redisson实现分布式锁核心代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> CoursePublish <span class="title function_">getCoursePublishCache</span><span class="params">(Long courseId)</span>&#123;</span><br><span class="line">            <span class="comment">//先从缓存中查询</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">jsonString</span> <span class="operator">=</span> (String) redisTemplate.opsForValue().get(<span class="string">&quot;course:&quot;</span> + courseId);</span><br><span class="line">            <span class="keyword">if</span>(StringUtils.isNotEmpty(jsonString))&#123;</span><br><span class="line">             System.out.println(<span class="string">&quot;========从缓存中查询===========&quot;</span>);</span><br><span class="line">                <span class="comment">//将json转成对象返回</span></span><br><span class="line">                <span class="type">CoursePublish</span> <span class="variable">coursePublish</span> <span class="operator">=</span> JSON.parseObject(jsonString, CoursePublish.class);</span><br><span class="line">                <span class="keyword">return</span> coursePublish;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="comment">//使用setnx向redis设置一个key，谁设置成功谁拿到了锁</span></span><br><span class="line"><span class="comment">//             Boolean lock001 = redisTemplate.opsForValue().setIfAbsent(&quot;lock001&quot;, &quot;001&quot;,300,TimeUnit.SECONDS);</span></span><br><span class="line">                <span class="comment">//使用redisson获取锁</span></span><br><span class="line">                <span class="type">RLock</span> <span class="variable">lock</span> <span class="operator">=</span> redissonClient.getLock(<span class="string">&quot;coursequery:&quot;</span> + courseId);</span><br><span class="line">                <span class="comment">//获取分布式锁</span></span><br><span class="line">                lock.lock();</span><br><span class="line">                <span class="comment">//拿到锁的才会执行try finally代码块</span></span><br><span class="line">                <span class="keyword">try</span>&#123;</span><br><span class="line">                        <span class="comment">//Thread.sleep(35000);</span></span><br><span class="line">                        <span class="comment">//再次从缓存中查询一下</span></span><br><span class="line">                        jsonString = (String) redisTemplate.opsForValue().get(<span class="string">&quot;course:&quot;</span> + courseId);</span><br><span class="line">                        <span class="keyword">if</span>(StringUtils.isNotEmpty(jsonString))&#123;</span><br><span class="line">                            <span class="comment">//将json转成对象返回</span></span><br><span class="line">                            <span class="type">CoursePublish</span> <span class="variable">coursePublish</span> <span class="operator">=</span> JSON.parseObject(jsonString, CoursePublish.class);</span><br><span class="line">                            <span class="keyword">return</span> coursePublish;</span><br><span class="line">                        &#125;</span><br><span class="line">                        System.out.println(<span class="string">&quot;从数据库查询...&quot;</span>);</span><br><span class="line">                        <span class="comment">//如果缓存中没有，要从数据库查询</span></span><br><span class="line">                        <span class="type">CoursePublish</span> <span class="variable">coursePublish</span> <span class="operator">=</span> coursePublishMapper.selectById(courseId);</span><br><span class="line">                        <span class="comment">//将从数据库查询到的数据存入缓存 ,缓存中设置Key为 &quot;course:id&quot;</span></span><br><span class="line">                        redisTemplate.opsForValue().set(<span class="string">&quot;course:&quot;</span> + courseId,JSON.toJSONString(coursePublish),<span class="number">300</span>, TimeUnit.SECONDS);</span><br><span class="line">                        <span class="keyword">return</span> coursePublish ;</span><br><span class="line">                &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                    <span class="comment">//释放锁</span></span><br><span class="line">                    lock.unlock();  <span class="comment">//Redisson封装了底层执行lua脚本来实现解锁原子性的过程</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a><a class="post-meta__tags" href="/tags/Redis/">Redis</a><a class="post-meta__tags" href="/tags/Redission/">Redission</a></div><div class="post_share"><div class="addthis_inline_share_toolbox"></div><script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=null" async="async"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/02/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/how-http-works.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">HTTP-TCP</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2022/08/27/java-core-1/" title="java核心技术-基础篇"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/java-core-1.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-27</div><div class="title">java核心技术-基础篇</div></div></a></div><div><a href="/2022/08/08/leetcode-Recursion/" title="Leetcode-递归"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/leetcode.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-08</div><div class="title">Leetcode-递归</div></div></a></div><div><a href="/2022/09/13/java-core-2/" title="java核心技术-多线程"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/java-thread-lifecycle.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-13</div><div class="title">java核心技术-多线程</div></div></a></div><div><a href="/2022/09/14/java-core-3/" title="java核心技术-集合"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/java-collection-hierarchy.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-14</div><div class="title">java核心技术-集合</div></div></a></div><div><a href="/2022/12/12/SpringSecurity/" title="SpringSecurity"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/jwt.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-12</div><div class="title">SpringSecurity</div></div></a></div><div><a href="/2022/12/01/redis/" title="Redis持久化"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/redis.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-01</div><div class="title">Redis持久化</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/Monstercat.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">amonstercat</div><div class="author-info__description">-an amateur coder-</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">35</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/amonstercat"><i class="fas fa-cat"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://t.me/aMonstercat" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a><a class="social-icon" href="https://github.com/amonstercat" target="_blank" title="Github"><i class="fab fa-github-alt"></i></a><a class="social-icon" href="mailto:amonstercattt@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a><a class="social-icon" href="https://twitter.com/aMonstercatt" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">Having fun</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">基本数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#String"><span class="toc-number">1.1.</span> <span class="toc-text">String</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#List"><span class="toc-number">1.2.</span> <span class="toc-text">List</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash"><span class="toc-number">1.3.</span> <span class="toc-text">Hash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Set-amp-Zset"><span class="toc-number">1.4.</span> <span class="toc-text">Set&amp;Zset</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Stream"><span class="toc-number">1.5.</span> <span class="toc-text">Stream</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="toc-number">1.5.1.</span> <span class="toc-text">消息队列</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">2.</span> <span class="toc-text">持久化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOF"><span class="toc-number">2.1.</span> <span class="toc-text">AOF</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AOF%E9%87%8D%E5%86%99"><span class="toc-number">2.1.1.</span> <span class="toc-text">AOF重写</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB"><span class="toc-number">2.2.</span> <span class="toc-text">RDB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">2.3.</span> <span class="toc-text">混合持久化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E5%8F%AF%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">高可用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="toc-number">3.1.</span> <span class="toc-text">主从复制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%A8%E5%85%B5"><span class="toc-number">3.2.</span> <span class="toc-text">哨兵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%86%E7%BE%A4"><span class="toc-number">3.3.</span> <span class="toc-text">集群</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB"><span class="toc-number">3.3.1.</span> <span class="toc-text">故障转移</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-number">4.</span> <span class="toc-text">分布式锁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="toc-number">4.1.</span> <span class="toc-text">缓存穿透</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="toc-number">4.2.</span> <span class="toc-text">缓存击穿</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="toc-number">4.3.</span> <span class="toc-text">缓存雪崩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redisson%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-number">4.4.</span> <span class="toc-text">Redisson分布式锁</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/03/01/Redis-%E5%A4%8D%E4%B9%A0(1)/" title="Redis-复习"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/Redis-all.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis-复习"/></a><div class="content"><a class="title" href="/2023/03/01/Redis-%E5%A4%8D%E4%B9%A0(1)/" title="Redis-复习">Redis-复习</a><time datetime="2023-03-01T07:00:00.000Z" title="Created 2023-03-01 15:00:00">2023-03-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/" title="HTTP-TCP"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/how-http-works.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HTTP-TCP"/></a><div class="content"><a class="title" href="/2023/02/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/" title="HTTP-TCP">HTTP-TCP</a><time datetime="2023-02-20T05:00:00.000Z" title="Created 2023-02-20 13:00:00">2023-02-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/16/mysql-%E9%94%81/" title="Mysql-锁机制"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/investigating-locks-in-mysql.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Mysql-锁机制"/></a><div class="content"><a class="title" href="/2023/02/16/mysql-%E9%94%81/" title="Mysql-锁机制">Mysql-锁机制</a><time datetime="2023-02-16T10:00:00.000Z" title="Created 2023-02-16 18:00:00">2023-02-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/10/Rocketmq/" title="Rocketmq"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/rocketmq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Rocketmq"/></a><div class="content"><a class="title" href="/2023/01/10/Rocketmq/" title="Rocketmq">Rocketmq</a><time datetime="2023-01-10T10:00:00.000Z" title="Created 2023-01-10 18:00:00">2023-01-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/08/SpringCloud-Gateway/" title="SpringCloud-Seata"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/seata.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringCloud-Seata"/></a><div class="content"><a class="title" href="/2023/01/08/SpringCloud-Gateway/" title="SpringCloud-Seata">SpringCloud-Seata</a><time datetime="2023-01-08T11:00:00.000Z" title="Created 2023-01-08 19:00:00">2023-01-08</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By amonstercat</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Having fun!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="Chat"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="100" alpha="0.5" zIndex="-1" mobile="true" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
