@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="RSS 订阅" description="RSS 是给阅读器订阅博客更新使用的 XML Feed。">
+  <main class="content-shell py-16">
+    <article>
+      <header class="border-b border-slate-200 pb-10">
+        <p class="mb-4 text-sm font-semibold uppercase tracking-wide text-sky-600">RSS</p>
+        <h1 class="text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl">RSS 订阅</h1>
+        <p class="mt-5 text-base leading-8 text-slate-600">
+          RSS 是给阅读器订阅网站更新用的格式。浏览器直接打开 <code>/rss.xml</code> 时看到 XML 文档是正常现象，不是网站报错。
+        </p>
+      </header>
+
+      <div class="article-prose mt-10">
+        <p>
+          如果你使用 Feedly、Inoreader、NetNewsWire、Reeder、Miniflux 等 RSS 阅读器，把下面这个地址复制进去即可订阅：
+        </p>
+
+        <p>
+          <a href="/rss.xml">https://amonstercat.github.io/rss.xml</a>
+        </p>
+
+        <p>
+          以后博客发布新文章，RSS 阅读器会自动发现更新。它的作用有点像“无算法的信息流”：你订阅什么，就看什么。
+        </p>
+      </div>
+    </article>
+  </main>
+</BaseLayout>

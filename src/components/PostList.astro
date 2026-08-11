@@ -1,0 +1,39 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate } from "../lib/posts";
+
+interface Props {
+  posts: CollectionEntry<"blog">[];
+}
+
+const { posts } = Astro.props;
+---
+
+{
+  posts.length > 0 ? (
+    <div class="grid gap-4">
+      {posts.map((post) => (
+        <a class="post-card block no-underline" href={`/blog/${post.id}/`}>
+          <div>
+            <div class="mb-3 flex flex-wrap items-center gap-3">
+              <time class="text-sm font-medium text-slate-500" datetime={post.data.pubDate.toISOString()}>
+                {formatDate(post.data.pubDate)}
+              </time>
+              <span class="h-1 w-1 rounded-full bg-slate-300" aria-hidden="true" />
+              <span class="text-sm text-slate-500">{post.data.tags[0] ?? "Note"}</span>
+            </div>
+            <div class="text-xl font-semibold tracking-tight text-slate-950">{post.data.title}</div>
+            <p class="mt-2 leading-7 text-slate-600">{post.data.description}</p>
+            <div class="mt-4 flex flex-wrap gap-2" aria-label="文章标签">
+              {post.data.tags.map((tag) => (
+                <span class="tag-pill">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  ) : (
+    <p class="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-slate-500">还没有发布文章。</p>
+  )
+}

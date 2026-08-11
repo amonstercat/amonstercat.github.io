@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://amonstercat.github.io/sitemap-index.xml
