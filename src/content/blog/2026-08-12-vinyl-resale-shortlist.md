@@ -26,6 +26,33 @@ draft: false
 | 4 | Sugar Babe — *SONGS 50th Anniversary* | ¥186 | ¥265 | +¥79 | 1LP，关联到山下达郎／大贯妙子受众，适合小批量测试。 |
 | 5 | Coldplay — *Parachutes* Clear EcoRecord | ¥133 | ¥178 | +¥45 | 1LP，绝对进货价低，适合用较小资金试水。 |
 
+### 五张优先单品：用封面核对版本
+
+下面不是装饰图，而是用于识别这次比价所对应版本的商品封面／详情图。点击每一张图都能回到官方商品页；图片刻意按清晰尺寸呈现，方便核对 OBI、年份和颜色胶信息。
+
+<div class="record-gallery" aria-label="五张优先购入黑胶的商品图">
+  <a class="record-card" href="https://tower.jp/item/5629290" target="_blank" rel="noopener noreferrer">
+    <img src="https://cdn.tower.jp/za/o/3W/zaP5_G3763353W.JPG" alt="山下达郎 FOR YOU 2023 年 180g 复刻黑胶封面" loading="lazy" decoding="async" />
+    <span class="record-card-copy"><strong>山下达郎 · FOR YOU</strong><span>2023 180g · 1LP · 优先 1</span></span>
+  </a>
+  <a class="record-card" href="https://tower.jp/item/5629297" target="_blank" rel="noopener noreferrer">
+    <img src="https://baseec-img-mng.akamaized.net/images/item/origin/2ffc699b27a6ac1cfd28febbb6899f62.jpg?im=Resize%2Cwidth%3D1120%2Ctype%3Dnormal&amp;imformat=generic&amp;q=80" alt="山下达郎 RIDE ON TIME 2023 年 180g 复刻黑胶商品详情图，含 OBI" loading="lazy" decoding="async" />
+    <span class="record-card-copy"><strong>山下达郎 · RIDE ON TIME</strong><span>2023 180g · 1LP · 优先 2</span></span>
+  </a>
+  <a class="record-card" href="https://tower.jp/item/5629310" target="_blank" rel="noopener noreferrer">
+    <img src="https://cdn.tower.jp/za/o/1W/zaP5_G3763361W.JPG" alt="山下达郎 SPACY 2023 年 180g 复刻黑胶封面" loading="lazy" decoding="async" />
+    <span class="record-card-copy"><strong>山下达郎 · SPACY</strong><span>2023 180g · 1LP · 优先 3</span></span>
+  </a>
+  <a class="record-card" href="https://tower.jp/item/6767874" target="_blank" rel="noopener noreferrer">
+    <img src="https://cdn.tower.jp/za/o/0W/zaP5_G4797790W.JPG" alt="Sugar Babe SONGS 50th Anniversary Edition 黑胶封面" loading="lazy" decoding="async" />
+    <span class="record-card-copy"><strong>Sugar Babe · SONGS</strong><span>50th Anniversary · 1LP · 优先 4</span></span>
+  </a>
+  <a class="record-card" href="https://imusic.com.cn/music/5021732630865/coldplay-2025-parachutes-lp" target="_blank" rel="noopener noreferrer">
+    <img src="https://imusic.com.cn/local-image/images/item/original/865/5021732630865.jpg?coldplay-2025-parachutes-lp&amp;class=scaled&amp;v=1750245020" alt="Coldplay Parachutes Clear EcoRecord 黑胶封面" loading="lazy" decoding="async" />
+    <span class="record-card-copy"><strong>Coldplay · Parachutes</strong><span>Clear EcoRecord · 1LP · 优先 5</span></span>
+  </a>
+</div>
+
 把这五张一起看，官方商品价合计约 **¥877**，对应的闲鱼挂牌合计约 **¥1,268**，未计任何成本的表面价差约 **¥391**。其中四张日版都是 180g 单碟，仍会比普通 1LP 略重；但“1LP”在运输和单次采购控制上，依然远优于 2LP、3LP。
 
 ## 这次的筛选口径
@@ -49,6 +76,35 @@ draft: false
 | Billie Eilish — *Happier Than Ever* Black Eco-Mix | [iMusic](https://imusic.com.cn/music/0602435973548/billie-eilish-2021-happier-than-ever-lp) | 2LP | ¥217 | [¥250–300](https://www.goofish.com/item?id=1054927420766&categoryId=126864811) | +¥33–83 | **观察**：差额弹性存在，但双碟、Eco-Mix 版本必须严格对照。 |
 | Sabrina Carpenter — *Man’s Best Friend* Opaque Light Blue | [iMusic](https://imusic.com.cn/music/0602478316616/sabrina-carpenter-2025-man-s-best-friend-lp) | 1LP | ¥200 | [¥279](https://www.goofish.com/item?id=1006173747774&categoryId=126862152) | +¥79 | **待复核**：有 7 人想要；颜色胶与条码对上才有意义。 |
 | Sabrina Carpenter — *Short n’ Sweet* Vintage Bottle | [iMusic](https://imusic.com.cn/music/0602465861372/sabrina-carpenter-2024-short-n-sweet-lp) | 1LP | ¥242 | [¥285](https://www.goofish.com/item?id=1004339974250&categoryId=126862152) | +¥43 | **待复核**：颜色名称相近的不同版本很多，不建议盲买。 |
+
+### 另外五张候选：先看清版本，再谈差价
+
+这五张也列入了本轮观察，但双碟重量、彩胶变体或条码差异都会显著影响是否值得买。图中展示的是本次官方进货页所对应的商品版本，不把不同颜色胶或二手封套混在一起。
+
+<div class="record-gallery" aria-label="五张观察候选黑胶的商品图">
+  <a class="record-card" href="https://tower.jp/item/6440254" target="_blank" rel="noopener noreferrer">
+    <img src="https://cdn.tower.jp/za/o/96/4997184188296.jpg" alt="Nujabes modal soul HOLP-104 黑胶封面" loading="lazy" decoding="async" />
+    <span class="record-card-copy"><strong>Nujabes · modal soul</strong><span>HOLP-104 · 2LP · 重量优先级较低</span></span>
+  </a>
+  <a class="record-card" href="https://imusic.com.cn/music/0602458163667/olivia-rodrigo-2023-guts-lp" target="_blank" rel="noopener noreferrer">
+    <img src="https://imusic.com.cn/local-image/images/item/original/667/0602458163667.jpg?olivia-rodrigo-2023-guts-lp&amp;class=scaled&amp;v=1689318139" alt="Olivia Rodrigo GUTS Limited Lavender 黑胶封面" loading="lazy" decoding="async" />
+    <span class="record-card-copy"><strong>Olivia Rodrigo · GUTS</strong><span>Limited Lavender · 1LP · 核对颜色与条码</span></span>
+  </a>
+  <a class="record-card" href="https://imusic.com.cn/music/0602435973548/billie-eilish-2021-happier-than-ever-lp" target="_blank" rel="noopener noreferrer">
+    <img src="https://imusic.com.cn/local-image/images/item/original/548/0602435973548.jpg?billie-eilish-2021-happier-than-ever-lp&amp;class=scaled&amp;v=1619603125" alt="Billie Eilish Happier Than Ever Black Eco-Mix 黑胶封面" loading="lazy" decoding="async" />
+    <span class="record-card-copy"><strong>Billie Eilish · Happier Than Ever</strong><span>Black Eco-Mix · 2LP · 先算重量</span></span>
+  </a>
+  <a class="record-card" href="https://imusic.com.cn/music/0602478316616/sabrina-carpenter-2025-man-s-best-friend-lp" target="_blank" rel="noopener noreferrer">
+    <img src="https://imusic.com.cn/local-image/images/item/original/616/0602478316616.jpg?sabrina-carpenter-2025-man-s-best-friend-lp&amp;class=scaled&amp;v=1750670697" alt="Sabrina Carpenter Man’s Best Friend Opaque Light Blue 黑胶封面" loading="lazy" decoding="async" />
+    <span class="record-card-copy"><strong>Sabrina Carpenter · Man’s Best Friend</strong><span>Opaque Light Blue · 1LP · 待复核</span></span>
+  </a>
+  <a class="record-card" href="https://imusic.com.cn/music/0602465861372/sabrina-carpenter-2024-short-n-sweet-lp" target="_blank" rel="noopener noreferrer">
+    <img src="https://imusic.com.cn/local-image/images/item/original/372/0602465861372.jpg?sabrina-carpenter-2024-short-n-sweet-lp&amp;class=scaled&amp;v=1779013328" alt="Sabrina Carpenter Short n’ Sweet Vintage Bottle 黑胶封面" loading="lazy" decoding="async" />
+    <span class="record-card-copy"><strong>Sabrina Carpenter · Short n’ Sweet</strong><span>Vintage Bottle · 1LP · 待复核</span></span>
+  </a>
+</div>
+
+<p class="record-image-note">图片用于商品版本识别，来源为所链接的官方或零售商品详情页；封面及艺人相关权利归各自权利人所有。</p>
 
 ### 一个明确的排除项
 
