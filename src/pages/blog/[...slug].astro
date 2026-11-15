@@ -18,10 +18,10 @@ const toc = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 
 
 <BaseLayout title={post.data.title} description={post.data.description} image={post.data.cover}>
   <main class="shell grid gap-10 py-16 lg:grid-cols-[14rem_minmax(0,52rem)_14rem] lg:items-start">
-    <aside class="hidden lg:block">
+    <aside class="article-toc-sidebar hidden lg:block">
       {
         toc.length > 0 && (
-          <nav class="sticky top-28 rounded-xl border border-slate-200 bg-white/80 p-4 text-sm shadow-sm backdrop-blur" aria-label="文章目录">
+          <nav class="article-toc-desktop rounded-xl border border-slate-200 bg-white/80 p-4 text-sm shadow-sm backdrop-blur" aria-label="文章目录">
             <p class="mb-3 font-semibold text-slate-950">目录</p>
             <ol class="space-y-2">
               {toc.map((heading) => (
@@ -47,22 +47,7 @@ const toc = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 
         <div class="mt-5 flex flex-wrap gap-2">
           {post.data.tags.map((tag) => <a class="tag-pill" href={`/tags/${tag}/`}>{tag}</a>)}
         </div>
-        {
-          toc.length > 0 && (
-            <nav class="mt-8 rounded-xl border border-slate-200 bg-white/80 p-4 text-sm shadow-sm lg:hidden" aria-label="文章目录">
-              <p class="mb-3 font-semibold text-slate-950">本文目录</p>
-              <ol class="grid gap-2">
-                {toc.map((heading) => (
-                  <li class={heading.depth === 3 ? "pl-3" : ""}>
-                    <a class="text-slate-600 no-underline hover:text-sky-600" href={`#${heading.slug}`}>
-                      {heading.text}
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          )
-        }
+
       </header>
       {
         post.data.cover && (
@@ -77,7 +62,106 @@ const toc = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 
     </article>
     <div class="hidden lg:block" aria-hidden="true" />
   </main>
+  {
+    toc.length > 0 && (
+      <>
+        <button class="article-toc-trigger lg:hidden" type="button" data-toc-open aria-controls="article-toc-dialog" aria-haspopup="dialog">目录</button>
+        <dialog class="article-toc-dialog" id="article-toc-dialog" aria-labelledby="article-toc-title">
+          <div class="article-toc-dialog-header">
+            <h2 id="article-toc-title">文章目录</h2>
+            <button type="button" data-toc-close aria-label="关闭文章目录">关闭 ×</button>
+          </div>
+          <nav class="article-toc-mobile-nav" aria-label="文章目录">
+            <ol>
+              {toc.map((heading) => (
+                <li class={heading.depth === 3 ? "article-toc-subheading" : ""}>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </dialog>
+      </>
+    )
+  }
+  <style>
+    .article-toc-sidebar .article-toc-desktop {
+      position: fixed;
+      top: 6rem;
+      left: max(0.75rem, calc((100% - 88rem) / 2));
+      width: 14rem;
+      max-height: calc(100dvh - 7.5rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+    }
+    .article-toc-trigger {
+      position: fixed;
+      right: 1rem;
+      bottom: max(1.25rem, env(safe-area-inset-bottom));
+      z-index: 30;
+      padding: 0.75rem 1rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      background: #fff;
+      color: #0f172a;
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: 0 4px 20px #0f172a20;
+      cursor: pointer;
+    }
+    .article-toc-trigger:focus-visible,
+    .article-toc-dialog button:focus-visible,
+    .article-toc-dialog a:focus-visible {
+      outline: 2px solid #0284c7;
+      outline-offset: 3px;
+    }
+    .article-toc-dialog {
+      width: min(34rem, calc(100% - 2rem));
+      max-height: calc(100dvh - 3rem);
+      margin: auto;
+      padding: 0;
+      border: 1px solid #cbd5e1;
+      border-radius: 1rem;
+      background: #fff;
+      color: #0f172a;
+      box-shadow: 0 20px 80px #0f172a30;
+    }
+    .article-toc-dialog[open] { display: flex; flex-direction: column; }
+    .article-toc-dialog::backdrop { background: #0f172a66; }
+    .article-toc-dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid #e2e8f0; }
+    .article-toc-dialog-header h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+    .article-toc-dialog-header button { padding: 0.375rem; background: transparent; border: 0; font: inherit; cursor: pointer; }
+    .article-toc-dialog .article-toc-mobile-nav { min-height: 0; max-height: none; overflow-y: auto; overscroll-behavior: contain; padding: 0.75rem 1.25rem 1.25rem; }
+    .article-toc-mobile-nav ol { margin: 0; padding: 0; list-style: none; }
+    .article-toc-mobile-nav a { display: block; padding: 0.5rem 0; color: #475569; text-decoration: none; line-height: 1.6; }
+    .article-toc-mobile-nav a:hover { color: #0284c7; }
+    .article-toc-subheading { padding-left: 0.875rem; font-size: 0.875rem; }
+    @media print { .article-toc-sidebar, .article-toc-trigger, .article-toc-dialog { display: none !important; } }
+  </style>
   <script>
+    const tocDialog = document.querySelector<HTMLDialogElement>("#article-toc-dialog");
+    const tocTrigger = document.querySelector<HTMLButtonElement>("[data-toc-open]");
+    let previousBodyOverflow = "";
+    tocTrigger?.addEventListener("click", () => {
+      if (!tocDialog || tocDialog.open) return;
+      previousBodyOverflow = document.body.style.overflow;
+      tocDialog.showModal();
+      document.body.style.overflow = "hidden";
+    });
+    tocDialog?.querySelector("[data-toc-close]")?.addEventListener("click", () => tocDialog.close());
+    tocDialog?.querySelector("nav")?.addEventListener("click", (event) => {
+      if ((event.target as Element).closest("a[href^='#']")) tocDialog.close();
+    });
+    tocDialog?.addEventListener("close", () => {
+      document.body.style.overflow = previousBodyOverflow;
+      tocTrigger?.focus({ preventScroll: true });
+    });
+    tocDialog?.addEventListener("click", (event) => {
+      if (event.target !== tocDialog) return;
+      const box = tocDialog.getBoundingClientRect();
+      if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) tocDialog.close();
+    });
     const blocks = Array.from(document.querySelectorAll("pre > code")).filter((block) => {
       const text = block.textContent?.trimStart() ?? "";
       return /^(flowchart|sequenceDiagram|graph|classDiagram|stateDiagram|erDiagram|journey|gantt)\b/.test(text);
