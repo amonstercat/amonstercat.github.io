@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-labelledby="02-agent-loop-title 02-agent-loop-desc" id="d-02-agent-loop-root">
+<title id="02-agent-loop-title">Harness 怎样把一次调用变成任务循环</title>
+<desc id="02-agent-loop-desc">运行框架在组装上下文、模型推理、输出路由、工具执行与记录之间循环，并按成功契约结束任务。</desc>
+<defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
+      #d-02-agent-loop-root { color: #2d3142; font-family: 'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif; }
+      #d-02-agent-loop-root .diagram-container { width:100%;overflow-x:auto }
+      #d-02-agent-loop-root .diagram-container { overflow-x:visible }</style>
+<marker id="d-02-agent-loop-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>
+<marker id="d-02-agent-loop-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#eb6c36"/></marker>
+<marker id="d-02-agent-loop-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#2e5aa8"/></marker>
+</defs>
+<rect width="1280" height="720" fill="#f5f5f5"/>
+<text x="48" y="72" font-size="40" font-family="'Instrument Serif','Songti SC','Noto Serif SC',serif" fill="#2d3142">Harness 怎样把一次调用变成任务循环</text>
+<text x="48" y="112" font-size="12" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" fill="#4f5d75">AGENT RUNTIME · 02 / 10 · CONCEPTUAL ENGINEERING DIAGRAM</text>
+<path d="M 336 256 L 512 256" fill="none" stroke="#2e5aa8" stroke-width="1.5" marker-end="url(#d-02-agent-loop-arrow-link)"/>
+<rect x="400.0" y="228" width="48" height="20" fill="#f5f5f5"/>
+<text x="424" y="242" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">输入</text>
+<path d="M 768 256 L 944 256" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#d-02-agent-loop-arrow)"/>
+<rect x="818.0" y="228" width="76" height="20" fill="#f5f5f5"/>
+<text x="856" y="242" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">结构化输出</text>
+<path d="M 1072 304 L 1072 448" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#d-02-agent-loop-arrow)"/>
+<rect x="1080.0" y="366" width="64" height="20" fill="#f5f5f5"/>
+<text x="1112.0" y="380" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">需要工具</text>
+<path d="M 944 496 L 768 496" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#d-02-agent-loop-arrow)" stroke-dasharray="5 4"/>
+<rect x="824.0" y="468" width="64" height="20" fill="#f5f5f5"/>
+<text x="856" y="482" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">执行结果</text>
+<path d="M 512 496 L 336 496" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#d-02-agent-loop-arrow)"/>
+<rect x="392.0" y="468" width="64" height="20" fill="#f5f5f5"/>
+<text x="424" y="482" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">更新状态</text>
+<path d="M 208 448 L 208 304" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#d-02-agent-loop-arrow)" stroke-dasharray="5 4"/>
+<rect x="136.0" y="366" width="64" height="20" fill="#f5f5f5"/>
+<text x="168.0" y="380" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">仍需继续</text>
+<rect x="80" y="208" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="80" y="208" width="256" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+<text x="208.0" y="252.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">组装上下文</text>
+<text x="208.0" y="280.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">指令、历史、工具说明</text>
+<rect x="512" y="208" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="512" y="208" width="256" height="96" rx="6" fill="#f6e9e2" stroke="#eb6c36" stroke-width="1.2"/>
+<text x="640.0" y="252.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">请求模型推理</text>
+<text x="640.0" y="280.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">生成回答或调用请求</text>
+<rect x="944" y="208" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="944" y="208" width="256" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+<text x="1072.0" y="252.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">识别输出类型</text>
+<text x="1072.0" y="280.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">message / tool call</text>
+<rect x="944" y="448" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="944" y="448" width="256" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+<text x="1072.0" y="492.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">校验并执行工具</text>
+<text x="1072.0" y="520.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">名称、参数、权限</text>
+<rect x="512" y="448" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="512" y="448" width="256" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+<text x="640.0" y="492.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">保存工具结果</text>
+<text x="640.0" y="520.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">对应 call_id 与状态</text>
+<rect x="80" y="448" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="80" y="448" width="256" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+<text x="208.0" y="492.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">判断继续或结束</text>
+<text x="208.0" y="520.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">成功契约、错误与预算</text>
+<text x="80" y="616" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="400" fill="#4f5d75">已有最终回答且满足任务要求时结束；模型请求工具不等于工具已经执行。</text>
+<line x1="48" y1="652" x2="1232" y2="652" stroke="#bfc0c0"/>
+<text x="48" y="684" font-size="12" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" fill="#4f5d75">实线：请求 / 状态流转　　虚线：结果 / 可选传递　　橙色：本图关注点</text>
+</svg>

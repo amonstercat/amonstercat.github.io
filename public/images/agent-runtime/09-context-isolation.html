@@ -1,0 +1,54 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>上下文独立维护，文件可以共享</title><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet"><style>body{margin:0;background:#f5f5f5;color:#2d3142;font-family:'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif}main{max-width:1280px;margin:auto;min-width:0}.diagram-container{width:100%;overflow-x:auto}svg{display:block;width:100%;min-width:1280px}@media print{.diagram-container{overflow-x:visible}svg{min-width:0}}</style><main><div class="diagram-container"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-labelledby="09-context-isolation-title 09-context-isolation-desc">
+<title id="09-context-isolation-title">上下文独立维护，文件可以共享</title>
+<desc id="09-context-isolation-desc">父对话快照可以成为多个任务的起点，之后各自累积上下文，必要信息经消息或结果回传。</desc>
+<defs>
+<marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>
+<marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#eb6c36"/></marker>
+<marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#2e5aa8"/></marker>
+</defs>
+<rect width="1280" height="720" fill="#f5f5f5"/>
+<text x="48" y="72" font-size="40" font-family="'Instrument Serif','Songti SC','Noto Serif SC',serif" fill="#2d3142">上下文独立维护，文件可以共享</text>
+<text x="48" y="112" font-size="12" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" fill="#4f5d75">AGENT RUNTIME · 09 / 10 · CONCEPTUAL ENGINEERING DIAGRAM</text>
+<path d="M 336 344 L 400.0 344.0 Q 408 344 408.0 336.0 L 408.0 216.0 Q 408 208 416.0 208.0 L 512 208" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="392.0" y="180" width="64" height="20" fill="#f5f5f5"/>
+<text x="424" y="194" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">独立续接</text>
+<path d="M 336 368 L 512 368" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="392.0" y="340" width="64" height="20" fill="#f5f5f5"/>
+<text x="424" y="354" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">分派快照</text>
+<path d="M 336 392 L 424.0 392.0 Q 432 392 432.0 400.0 L 432.0 520.0 Q 432 528 440.0 528.0 L 512 528" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="424.0" y="500" width="64" height="20" fill="#f5f5f5"/>
+<text x="456" y="514" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">分派快照</text>
+<path d="M 768 368 L 944 368" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="5 4"/>
+<rect x="824.0" y="340" width="64" height="20" fill="#f5f5f5"/>
+<text x="856" y="354" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">提交结果</text>
+<path d="M 768 528 L 848.0 528.0 Q 856 528 856.0 520.0 L 856.0 400.0 Q 856 392 864.0 392.0 L 944 392" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="5 4"/>
+<path d="M 1072 320 L 1072.0 216.0 Q 1072 208 1064.0 208.0 L 768 208" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="5 4"/>
+<rect x="870.0" y="180" width="100" height="20" fill="#f5f5f5"/>
+<text x="920" y="194" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">主任务获得结论</text>
+<rect x="80" y="320" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="80" y="320" width="256" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+<text x="208.0" y="364.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">父上下文快照</text>
+<text x="208.0" y="392.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">只代表分派时刻</text>
+<rect x="512" y="160" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="512" y="160" width="256" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+<text x="640.0" y="204.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">主 Agent 上下文</text>
+<text x="640.0" y="232.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">后续用户消息与工具结果</text>
+<rect x="512" y="320" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="512" y="320" width="256" height="96" rx="6" fill="#f6e9e2" stroke="#eb6c36" stroke-width="1.2"/>
+<text x="640.0" y="364.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">子 Agent A 上下文</text>
+<text x="640.0" y="392.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">任务 A 与自己的材料</text>
+<rect x="512" y="480" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="512" y="480" width="256" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+<text x="640.0" y="524.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">子 Agent B 上下文</text>
+<text x="640.0" y="552.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">任务 B 与自己的材料</text>
+<rect x="944" y="320" width="256" height="96" rx="6" fill="#f5f5f5"/>
+<rect x="944" y="320" width="256" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+<text x="1072.0" y="364.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">回传消息与结论</text>
+<text x="1072.0" y="392.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">显式交换所需信息</text>
+<rect x="80" y="520" width="336" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="80" y="520" width="336" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+<text x="248.0" y="548.0" text-anchor="middle" font-family="'Geist','PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#2d3142">可能共享的工作目录</text>
+<text x="248.0" y="576.0" text-anchor="middle" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" font-size="12" fill="#4f5d75">上下文隔离不等于文件隔离</text>
+<line x1="48" y1="652" x2="1232" y2="652" stroke="#bfc0c0"/>
+<text x="48" y="684" font-size="12" font-family="'Geist Mono','PingFang SC','Noto Sans Mono CJK SC',monospace" fill="#4f5d75">实线：请求 / 状态流转　　虚线：结果 / 可选传递　　橙色：本图关注点</text>
+</svg></div></main></html>
